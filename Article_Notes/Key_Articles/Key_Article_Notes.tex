@@ -14,7 +14,7 @@
 \usepackage{syntonly}
 \usepackage{amsmath}
 
-\syntaxonly % Use to ensure everything compiles. Speeds up compilation but suppresses output
+%\syntaxonly % Use to ensure everything compiles. Speeds up compilation but suppresses output
 
 \begin{document}
 	Otkin et al. $2018$
@@ -85,9 +85,86 @@
         \item[-] Easy to use and deliver drought forecasting tools are what are desired by effected 
                  groups (e.g., stakeholders).
 	\end{itemize}
-    \par
+    \par \par
     Christian et al. $2019$
     \begin{itemize}
-    	\item[-]
+    	\item[-] The evaporative stress ratio (ESR) incorporates temperature, wind speed, vapor pressure
+    	         deficit, latent heat flux, sensible heat flux, soil moisture, precipitation, and short
+    	         wave radiation.
+    	\begin{itemize}
+    		\item[-] Unlikely these are all satellite derived.
+    	\end{itemize}
+    	\item[-] The standardized ESR (SESR) are more easily compared between regions.
+    	\item[-] Mean and standard deviations for ESR and SESR are over all available years.
+    	\item[-] See p. $2$, equations $1$ -- $3$, and Figure 1 for method on SESR calculations.
+    	\item[-] There are four criteria for identifying flash drought:
+    	\begin{itemize}
+    		\item[$1)$] Minimum length of $5$ SESR changes (i.e., $6$ pentads for $30$ days).
+    		\begin{itemize}
+    			\item Eliminates dry spells.
+    		\end{itemize}
+    	    \item [$2)$] Final SESR values should be below the $20^{\text{th}}$ percentile of SESR values.
+    	    \begin{itemize}
+    	    	\item Drought condition from Otkin et al. $2018$.
+    	    \end{itemize}
+            \item[$3a)$] Change in SESR must be below the $40^{\text{th}}$ percentile between individual
+                         pentads.
+            \item[$3b)$] No more than $1$ change in SESR is allowed to be above the $40^{\text{th}}$
+                         percentile, following that a change in SESR meets criteria $3a$.
+            \begin{itemize}
+            	\item Requires drying conditions while allowing some moderation that may occur.
+            	\item Also helps prevent traditional droughts from being classified as flash droughts.
+            \end{itemize}
+            \item[$4)$] Mean change in SESR during the entire length of the flash drought (i.e.
+                        $SESR_{FD,end} - SESR_{FD,start}$) must be less than the $25^{\text{th}}$
+                        percentile of the climatological change in SESR for that grid point and time of
+                        year.
+             \begin{itemize}
+             	\item Ensures rapid rate of development, and that the drought is not significantly slowed
+             	      by temporary moderation.
+             \end{itemize}
+             \item[-] Figure 2 for an example of this analysis method.
+             \item[-] Figure 3 for how to apply this method.
+    	\end{itemize}
+        \item[-] Evaporative stress is limited in winter due to dormant vegetation (ET) and cold
+                 temperatures (PET).
+        \item[-] SESR calculated from NARR performed okay when tested against ESI.
+        \begin{itemize}
+        	\item[-] Figure 4 for comparison.
+        	\item[-] Page 6 for discussion.
+        \end{itemize}
+        \item[-] SESR calculated from NARR performed well when tested against the USDM.
+        \begin{itemize}
+        	\item[-] Figure 6 for comparison.
+        	\item[-] Pages $6$ -- $8$ for discussion.
+        \end{itemize}
+        \item[-] Figure 7 is interesting.
+        \item[-] Table 1 for an index on flash drought intensity.
+        \item[-] Figure 8 is also interesting.
+        \begin{itemize}
+        	\item[-] Same as Figure 7 but with intensity categories from Table 1.
+        \end{itemize}
+        \item[-] Found $24 \%$ of flash droughts had a monotonic decrease in SESR and $76 \%$ included
+                 a significant, but temporary moderation.
+        \item[-] Great Plains, western Great Lakes, Corn Belt, and Atlantic Coast (to a lesser degree)
+                 identified as hotspots.
+        \begin{itemize}
+        	\item[-] One reason may be land-atmosphere interactions  \& positive feedbacks.
+        	\item[-] Another could be due to agriculture.
+        \end{itemize}
+        \item[-] A hypothesis supported: regions with crops act as an accelerant for changes in
+                 evaporative stress and thus lead to more intense flash drought.
+        \item[-] Agricultural regions tend to contain a higher frequency of flash droughts.
+        \begin{itemize}
+        	\item[-] Only regions like the Corn Belt and Great Plains are highlighted. Potentially
+        	         in areas like Central Valley, Scab Lowlands, Salt Trough, etc.?
+        \end{itemize}
+        \item[-] SESR method could depend on the land surface model (LSM) used for the dataset.
+        \begin{itemize}
+        	\item[-] LSM has to capture ET and PET variability.
+        \end{itemize}
+        \item[-] SESR method places a cap on too many flash droughts identified (false alarm) error.
+        \item[-] Too few flash droughts identified error (some flash droughts missed) can have 
+                 subjectivity to it though.
     \end{itemize}
 \end{document}
