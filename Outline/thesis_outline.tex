@@ -1,0 +1,113 @@
+% This document will be a rough draft for a thesis outline, including a title discussed
+% in a meeting on Sepember 3, and some key words to go with it.
+
+\documentclass[12pt, letterpaper]{article}
+\usepackage{syntonly}
+% Next three packages are on the off chance that graphs or mathematics are needed in here.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+%\syntaxonly % Use this when adding new lines to check for compile errors.
+% 			   (increases run speed and prevents document being produced.)
+\title{Identification and Predictability of Flash Drought using the Global Forecast%
+       System} % Title from group discussion on September 3. Note Ryyan was the big
+               % contributor towards this title (it is mostly from one of her suggestions)
+\date{} % Omit the date
+               
+\begin{document}
+  \maketitle % Add the title
+
+  \begin{enumerate}
+    \item Introduction 
+    \begin{enumerate}
+      \item Background information
+      \begin{itemize}
+        \item[-] May include discussion of need for concrete definition for flash drought.
+        \item[-] Definition is addressed via SESR and introduction of criteria here.
+        \item[-] Other pertinent information. (Determining where GFS stands on drought
+                 forecasts may be useful here.)
+      \end{itemize}
+      
+      \item Address reason/purpose for the study.
+      \begin{itemize}
+        \item[-] Impacts of flash drought and need push "hindcasting" of flash drought
+                 to nowcasting or forecasting in order to adapt to them and mitigate impacts.
+        \item[-] Research questions here.
+        \begin{itemize}
+          \item[$\rightarrow$] Move identification of flash drought from hindsight to foresight.
+          \item[$\rightarrow$] Determine how well the GFS identifies and forecasts flash drought.
+                             (identification and forecast may be considered separately.)
+          \item[$\rightarrow$] Create a product that can be used in the GFS to forecast flash
+                             drought (more of a long term goal or future product).
+        \end{itemize}
+      \end{itemize}
+    \end{enumerate}
+      
+    \item Literature review
+    \begin{enumerate}
+      \item Review of literature on flash droughts
+      \item Review of literature on model progress and forecast attempts on droughts
+      \item Review of literature on GFS and where it currently stands
+    \end{enumerate}
+
+    \item Data
+    \begin{enumerate}
+      \item GFS data or GEFS data (ensemble will require bias correction)
+      \begin{itemize}
+        \item[-] Likely legacy and FV3
+        \item[-] Region is likely over CONUS. Extra code work if over NA or is that a
+                 processing issue?
+        \item[-] TBD which models run(s) (e.g., 12Z run, 00Z run, etc.; At which hour does it
+                 reinitialize, it if does?).
+        \item[-] Some uncertainty here if working with the model itself, or the output data.
+      \end{itemize}
+    \end{enumerate}
+
+    \item Methods
+      \begin{enumerate}
+        \item Identify flash drought with the GFS (i.e., realtime analysis).
+        \begin{itemize}
+          \item[-] Some questions to address here:
+          \begin{itemize}
+            \item[$\rightarrow$] Determining whether to use pentads vs. window analysis or
+                                 another type of analysis.
+            \item[$\rightarrow$] Note a synthetic dataset of past data will need to be
+                                 created for identification (similar to the Kyle Griffin
+                                 page, but for a longer time period)
+          \end{itemize}
+        \end{itemize}
+        \item Forecast/identify risk area for flash drought (1 week out, 2 weeks, etc.).
+        \begin{itemize}
+          \item[-] Should become trivial after identification (move time step foreward 
+                   while using same methodology for identification with synthetic dataset
+                   created above)
+          \item[-] Need to address inconsistency in temporal and spatial resolution after
+                   the 10 day forecast (deterministic) or 8 day forecast (ensemble)
+          \item[-] Could be identification or percentage of risk forecast.
+          \item[-] ``Predictability'' needs to be identified and determined here.
+        \end{itemize}
+      \end{enumerate}
+    
+    \item Results
+      \begin{enumerate}
+        \item TBD following actual analysis.
+        \item Prediction: First forecast will need much improvement.
+      \end{enumerate}
+    
+    \item Discussion
+      \begin{enumerate}
+        \item Does TBD need to be said anymore?
+      \end{enumerate}
+
+    \item Conclusion
+    \begin{enumerate}
+      \item See above three sections for this answer.
+    \end{enumerate}
+    
+  \end{enumerate}
+  
+  Some key words: Flash drought, GFS, drought prediction, ET, PET, SESR (maybe), LSM,
+  Land - Atmosphere
+
+\end{document}
