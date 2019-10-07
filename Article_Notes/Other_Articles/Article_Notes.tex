@@ -1,0 +1,511 @@
+% This document holds a collection of the notes for the articles in the flash drought identification
+% and forecast thesis project.
+%
+% References within the notes are citations within the article the note is taken of.
+% e.g., Otkin et al. (2014) in an itemize for Otkin et al. (2018) means to see the Otkin et al. (2014)
+% reference within the Otkin et al. (2018) paper for further reading.
+%
+% The articles are:
+%   Otkin et al. 2013 -- ESI Calculated from Thermal Infrared Satellite
+%   Otkin et al. 2015 -- Early Drought Warning
+%   Otkin et al. 2019 -- Vegetation and Soil Moisture Recovery
+%   Basara et al. 2019 -- 2012 Drought
+%   Wakefield et al. 2019 -- Land - Atmopshere
+%   Mesinger et al. 2006 -- NARR
+%   Gehne et al. 2019 -- GEFS Land Surface and State
+%   Zsoter et al. 2019 -- NWP and Hydrology
+%   Ek et al. 2003 -- Noah LSM
+%   Chen et al. 1996 -- Transpiration Methods
+%   Wang et al. 2018 -- Sensitivity of Ensemble Models to Bias
+%   Zhou et al. 2017 -- GEFS Configuration
+
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{syntonly}
+\usepackage{amsmath}
+
+%\syntaxonly % Use to ensure everything compiles. Speeds up compilation but suppresses output
+
+\begin{document}
+	\underline{Otkin et al. $2013$ -- ESI Calculated from Thermal Infrared Satellite}
+	\begin{itemize}
+		\item[-] Palmer drought severity index (PDSI) responds to changes slowly.
+		\begin{itemize}
+			\item[-] It is better for long term drought.
+			\item[-] Potentially oversensitive to temperature effects.
+		\end{itemize}
+	    \item[-] Theory for IR measurements:
+	    \begin{itemize}
+	    	\item[-] As moisture depletes, less energy is used for evaporation and transpiration.
+	    	         As a consequence, the stressed canopy temperatures increase (compared to the
+	    	         unstressed canopy).
+	    \end{itemize}
+        \item[-] IR measurements use thermal IR (TIR) based Atmosphere Land Exchange Inverse (ALEXI)
+                 surface energy balance model estimates for ET.
+        \begin{itemize}
+        	\item[-] More details on page 3.
+        \end{itemize}
+        \item[-] Pages 3 -- 4 for details on ESI calculations.
+        \item[-] ESI tested using 4 flash drought case studies with different vegetation, drought
+                 intensities, and durations.
+        \item[-] ESI is negative as drought increases.
+        \item[-] All flash drought events were associated with positive temperature anomalies, and
+                 low cloud cover.
+        \begin{itemize}
+        	\item[-] For the more severe cases, there was also persistent high winds, and high dewpoint
+        	         depressions.
+        \end{itemize}
+        \item[-] Shortest composite and time differencing interval provided the earliest warnings as
+                 they could respond more quickly to changing conditions.
+        \item[-] Reductions in ET precede precipitation deficits and reductions in biomass.
+        \begin{itemize}
+        	\item[-] Hence, the ESI can provide an early warning system.
+        \end{itemize}
+        \item[-] ESI does not rely on precipitation observations and can be applied to data sparse
+                 regions (due to being satellite based).
+	\end{itemize}
+    
+    \underline{Otkin et al. 2015 -- Early Drought Warning}
+    \begin{itemize}
+    	\item[-] See the National Integrated Drought Information System (NIDIS) for defined goal in 
+    	         creating a drought early warning system.
+    	\begin{itemize}
+    		\item[-] Provides a probabilistic forecast with sufficient spatial and temporal resolutions
+    		         for users to make informed decisions.
+    		\item[-] What resolution is sufficient?
+    	\end{itemize}
+        \item[-] Early warning systems should be integrated with new datasets that provide information on
+                 subseasonal time scales ($< 3$ months) and updated weekly.
+        \item[-] Section 3 on pages 3 -- 4 has an interesting discussion.
+        \begin{itemize}
+        	\item[-] Farming practices and how they impact drought and vice versa.
+        \end{itemize}
+        \item[-] ESI and RCI rated favorably in the group tests.
+        \item[-] ESI and RCI were most helpful when used together.
+        \begin{itemize}
+        	\item[-] ESI evaluates current conditions.
+        	\item[-] RCI provides a longer view on how conditions have been changing recently.
+        \end{itemize}
+        \item[-] There are some concerns over false alarms, but rated favorably for forecasts as
+                 farmers and ranchers are accustomed to uncertainties in decision making.
+        \begin{itemize}
+        	\item[-] ``Any tool that can provide reliable information is potentially useful.''
+        \end{itemize}
+        \item[-] Change in ESI had more neutral feedback.
+        \begin{itemize}
+        	\item[-] Difficulty in interpreting it.
+        	\item[-] Interesting discussion on pages 3 -- 4 (past paragraph on page 3).
+        	\begin{itemize}
+        		\item Change in ESI is normalized for usefulness, but the RCI was preferred for its
+        		      easily understood format.
+        		\item An explanation in on how to read a change in ESI would be useful.
+        	\end{itemize}
+        \end{itemize}
+        \item[-] Plume diagrams had more mixed results.
+        \begin{itemize}
+        	\item[-] Improved in the second meeting as more time was taken to explain it and how to read
+        	         it.
+        	\item[-] Unfamiliar format and a lot of information is held within it.
+        	\item[-] Difficult for non-scientists to read it unless clearly explained by via detailed
+        	         examples.
+        \end{itemize}
+        \item[-] Several weeks advanced notice of drought is ideal for ranchers, and one or two months
+                 for farmers.
+        \item[-] See page 5 for benefits of an early warning drought system.
+    \end{itemize}
+
+    \underline{Otkin et al. 2019 -- Vegetation and Soil Moisture Recovery}
+    \begin{itemize}
+    	\item[-] Anderson et al. (2007$a$, $b$, 2013) for a detailed description of ESI.
+    	\item[-] Myneni et al. (2002) for more information on MODIS LAI.
+    	\item[-] Largely a case study over flash drought and recovery in 2015.
+    	\item[-] Coined term ``flash recovery.''
+    	\begin{itemize}
+    		\item[-] Rapid improvement of conditions (likely due to heavy rainfall).
+    	\end{itemize}
+        \item[-] Also includes soil moisture estimates from land surface models and compares them.
+        \item[-] In general, the ensemble average of the LSMs performed better for flash drought 
+                 evolution than the individual models. 
+        \item[-] Future work includes assessing LSMs during flash droughts.
+        \item[-] Flash recovery may not translate to improved foliage and grain (plants may be too
+                 damaged or go dormant).
+    \end{itemize}
+
+    \underline{Basara et al. 2019 -- 2012 Drought}
+    \begin{itemize}
+    	\item[-] Mesinger et al. 2006 for ET calculations in NARR.
+    	\item[-] Additional use of other indices (HI and CTP). See Wakefield et al. 2019 for details.
+    	\item[-] Overall, this is a study of the 2012 drought.
+    	\item[-] Large flash drought event (set several records)
+    	\begin{itemize}
+    		\item[-] Might prove a useful example to test some things against, especially for some indices.
+    	\end{itemize}
+        \item[-] Drought is not a static, but evolves and propagates in time.
+        \begin{itemize}
+        	\item[-] This needs to be captured for any successful modeling.
+        \end{itemize}
+        \item[-] Note some of the impacts of drought -- modified air masses in new regions, helping the
+                 drought to propagate.
+    \end{itemize}
+
+    \underline{Wakefield et al. 2019 -- Land - Atmopshere}
+    \begin{itemize}
+    	\item[-] Introduction has a good list of impacts of land - atmosphere coupling.
+    	\item[-] Coupling strength is greatest over transition regions from humid to arid (several
+    	         citations here).
+    	\begin{itemize}
+    		\item[-] Needs to be captured in modeling attempts.
+    	\end{itemize}
+        \item[-] Transition climates are more sensitive to ET changes in soil moisture and atmospheric
+                 demand (more citations here).
+        \item[-] The sign of the changes can depend on the temporal and spatial resolution of what is
+                 used to examine them.
+        \item[-] FWI of 0.7 is optimal for plant use, and 0.4 is water stress (Illston et al. 2008).
+        \item[-] MetPy package in Python? (See May et al. 2017)
+        \item[-] Two steps to determining CTP (convective triggering potential).
+        \begin{itemize}
+        	\item[$1)$] Locating the moist adiabat that intersects the temporal profile 100 mb above 
+        	            the surface.
+        	\item[$2)$] Integrating the area between the moist adiabat and temperature from 100 mb to
+        	            300 mb above the surface.
+            \begin{itemize}
+        	    \item Essentially, a different type of CAPE.
+            \end{itemize}
+        \end{itemize}
+        \item[-] HI (low level humidity index) is the sum of dewpoint depressions at 150 mb and 50 mb
+                 above the surface.
+        \begin{itemize}
+        	\item[-] Note, only two levels are used for this ``average.'' Take with a grain of salt. 
+        \end{itemize}
+        \item[-] Interesting point made regarding NARR data (includes model data as well).
+        \begin{itemize}
+        	\item[-] NARR (and models) assimilates observations (such as radiosondes) into their data.
+        	         So data located near observation sites may match observations more readily, while
+        	         data sparse locations may be less realistic.
+        \end{itemize}
+        \item[-] CTP and HI have annual cycles, with summer having smaller variation.
+        \begin{itemize}
+        	\item[-] Result is that time scales less than 1 month have to be used.
+        	\item[-] Changes in variability necessitate the need for daily standardized anomalies.
+        \end{itemize}
+        \item[-] Daily z-scores have small sample size (16 years, so only 16 samples).
+        \begin{itemize}
+        	\item[-] Resulting z-scores were non-Gaussian and, as a result, may be biased.
+        	\item[-] z-scores were transformed into a Gaussian distribution for comparisons (similar to
+        	         SPI). See McKee et al. 1993 and Wilks 2013 for details on this.
+        \end{itemize}
+        \item[-] Note: HI above normal (z-score $> 0$) is drier conditions.
+        \item[-] Negative CTP in the climatology imply normally stable conditions.
+        \begin{itemize}
+        	\item[-] Not favorable for land - atmosphere coupling.
+        	\item[-] This is why the paper focuses on the warm season (MJJAS) as OK has a positive CTP
+        	         on average.
+        \end{itemize}
+        \item[-] Figure 8. 2015 does not have as clear of a signal (or dipole at least) in the quadrant
+                 analysis as 2007 or drought years.
+        \begin{itemize}
+        	\item[-] See discussion on pages 13 -- 14.
+        \end{itemize}
+        \item[-] The percentage of days in quadrant 2 (low moisture and high instability/energy/heat
+                 plumes) is greatest where the droughts are more intense (Figure 11).
+        \item[-] CTP diagnoses instability, and HI the low level moisture.
+        \item[-] Sensitivity of forecast skill to initial soil moisture conditions increases as the
+                 magnitude of the soil moisture anomalies increases (Koster et al. 2011).
+        \item[-] ET becomes more responsive as soils grow drier (Phillips and Klein 2014; 
+                 Williams et al. 2016).
+        \item[-] Found greater covariability between the surface and atmosphere during drought.
+        \item[-] CTP and HI framework has some utility in diagnosing and predicting hydrologic extremes,
+                 particularly for drought.
+    \end{itemize}
+
+    \underline{Mesinger et al. 2006 -- NARR}
+    \begin{itemize}
+    	\item[-] NARR covers a 25 year time span (1979 -- 2003, may be more by now).
+    	\item[-] Uses a recent version of the Noah LSM.
+    	\item[-] Claims to successfully assimilate high-quality and detailed precipitation observations.
+    	\item[-] Also claims improved forcing to the LSM.
+    	\item[-] Additionally, NARR provides an improved land hydrology and land - atmosphere interaction
+    	         analysis.
+    	\item[-] One of its goals was to better capture the regional hydrologic cycle (as well as other
+    	         things) than the global reanalysis.
+    	\item[-] NARR should also have a good representation of hydrologic extremes.
+    	\item[-] NARR should also interface well with other hydrologic models.
+    	\item[-] Several mixed fields are used as inputs to the LSM:
+    	\begin{itemize}
+    		\item[-] Land mask (land or water)
+    		\item[-] Vegetation type
+    		\item[-] Soil type
+    		\item[-] Surface slop category
+    		\item[-] Maximum snow albedo
+    		\item[-] Soil column bottom temperature
+    		\item[-] Number of root zone soil layers
+    	\end{itemize}
+        \item[-] Potentially the greatest addition to NARR was the assimilation of precipitation 
+                 observations (from rain gauges).
+        \item[-] 10m surface winds and 2m surface moisture observations were also assimilated.
+        \item[-] 2m temperature observations, however, were excluded from NARR.
+        \begin{itemize}
+        	\item[-] They created issues with vertical profiles generated.
+        \end{itemize}
+        \item[-] For a practical point, most NARR users will use the analyzed variables, but will also
+                 use the first guess for non-analyzed fields such as surface fluxes.
+        \item[-] Figure 10.
+        \begin{itemize}
+        	\item[-] The residual of the moisture budget (which should be 0, i.e. a closed balance) is
+        	         good in the central U.S. There is an imbalance, however, in the Intermountain West,
+        	         and Coastal Plains.
+        \end{itemize}
+        \item[-] The Noah LSM simulates soil temperature and moisture (frozen included) in four soil
+                 layers (10-, 30-, 60-, and 100-cm thicknesses).
+        \begin{itemize}
+        	\item[-] The infiltration scheme accounts for subgrid variability in soil moisture and
+        	         precipitation.
+        	\item[-] Surface evaporation includes evaporation from soils, transpiration from vegetation
+        	         canopy, evaporation from dew/frost or canopy intercept precipitation, and snow
+        	         sublimation.
+        \end{itemize}
+        \item[-] Land surface subset of NARR is available.
+        \begin{itemize}
+        	\item[-] Subset includes: surface fluxes and states, soil column states, and surface variables.
+        \end{itemize}
+        \item[-] Improvements in the NARR are generally greater in the winter than in the summer.
+        \item[-] Overall, a good summary of the NARR, including its capabilities and limitations. 
+                 Recommended for any use of the NARR.
+    \end{itemize}
+
+    \underline{Gehne et al. 2019 -- GEFS Land Surface and State}
+    \begin{itemize}
+    	\item[-] Some of the problems with the GEFS is that often the spread is too small, or the 
+    	         uncertainty is too high.
+    	\item[-] Hypothesis is that a major source of errors are a lack of treatment of uncertainties
+    	         in the soil state and associated LSMs.
+    	\item[-] Also hypothesizes that the spread can be increased by introducing stochastic surface
+    	         parameters and states.
+    	\item[-] \underline{The GEFS uses the Noah LSM}. (Ek et al. 2003 for details)
+    	\item[-] The ensemble of the GFS accounts for the random error, but not the systematic error.
+    	\begin{itemize}
+    		\item[-] An ensemble should be bias corrected before its skill is evaluated (Wang et al. 2018).
+    	\end{itemize}
+        \item[-] Previous works show perturbations in soil moisture initial conditions increase 
+                 precipitation spread in forests.
+        \item[-] Perturbations in this study are done through EOFs of the normalized soil moisture state
+                 estimates between two LSMs.
+        \begin{itemize}
+        	\item[-] Noah LSM
+        	\item[-] Community Land Model (CLM) LSM
+        \end{itemize}
+        \item[-] Subgrid heterogeneity is not accounted for in the Noah LSM in the GEFS.
+        \item[-] The Noah LSM also does not allow for multiple vegetation types within its grid.
+                 Rather, it uses the dominant vegetation as its vegetation type.
+        \item[-] Zhou et al. 2017 for GEFS configuration.
+        \item[-] Section 2 for a discussion on the idea and physics behind several perturbation schemes.
+        \item[-] Different LSMs use different parameters (e.g., soil conductivity), have different 
+                 textures, are driven by different specific evaporation and runoff formulations.
+        \begin{itemize}
+        	\item[-] As a result, soil moisture is model specific in its mean and variability.
+        	\item[-] To compare soil moisture between different LSMs, the soil moisture should be
+        	         standardized/normalized.
+        \end{itemize}
+        \item[-] See Bonan et al. 2002 for the CLM LSM.
+        \item[-] See pages 6 -- 8 for a discussion on model uncertainties and perturbations.
+        \item[-] See pages 8 -- 9 for a verification method.
+        \item[-] Forecast mean error is the root-mean-square-error (RMSE) between the ensemble mean and
+                 the verification.
+        \item[-] Equation 12 is an equation for the spread (standard deviation) of the ensemble.
+        \item[-] Equation 13 for the RMSE equation.
+        \item[-] Equations 14 -- 15 for the bias correction.
+        \item[-] Impacts of the soil moisture perturbation are largest in the summer hemisphere.
+        \item[-] Found a small increase in the spread.
+        \item[-] Previous studies (Koster et al. 2006; Zhang et al. 2011) showed that soil perturbations
+                 do not effect the atmosphere in the GFS as much as other models.
+        \begin{itemize}
+        	\item[-] Soil and atmosphere may be too weakly coupled.
+        \end{itemize}
+        \item[-] In the end, temperature bias was found to be a larger contributor to spread.
+        \begin{itemize}
+        	\item[-] Hence, addressing model bias is important for modeling efforts.
+        \end{itemize}
+    \end{itemize}
+
+    \underline{Zsoter et al. 2019 -- NWP and Hydrology}
+    \begin{itemize}
+    	\item[-] LSMs provide vertical fluxes of energy and water between the land and atmosphere,
+    	         but are generally less considered with other features (namely runoff).
+    	\begin{itemize}
+    		\item[-] Better forecasts, but less known for the hydrologic cycle.
+    	\end{itemize}
+        \item[-] The Euro uses a LSM and LDAS (land data assimilation system).
+        \begin{itemize}
+        	\item[-] May be worth looking into this for the GFS as well.
+        \end{itemize}
+        \item[-] Main issue is focused on an open water budget and associated issues.
+        \begin{itemize}
+        	\item[-] LDAS adds and removes water in its increments, which can leave an open water budget.
+        \end{itemize}
+        \item[-] Figure 5 is very interesting.
+        \begin{itemize}
+        	\item[-] Red indicates where the LDAS removes water, blue where the LDAS adds water.
+        	\item[-] $5a$ for the whole hydrologic cycle, $5b$ for snow water equivalent, $5c$ for soil
+        	         moisture.
+        	\item[-] Section $3b$ (pages 8 -- 10) for reasoning why water is added/removed where it is.
+        	\item[-] Note that while this figure is very interesting, it is for the Euro, not the GFS.
+        \end{itemize}
+        \item[-] Soil moisture can compensate for precipitation and 2m temperature biases.
+        \begin{itemize}
+        	\item[-] E.g., if there is a negative temperature bias (temperature is too low), the soil
+        	         moisture assimilation will remove water, reducing evaporative cooling and increasing
+        	         temperature.
+            \item[-] Think back to Mesinger et al. 2006, using the first guess for non-analyzed fields.
+            \item[-] I.e., order of operations matter. If bias correction is done after analysis (and
+                     soil moisture compensated for this), then there is over compensation and an error
+                     is introduced in soil moisture.
+            \begin{itemize}
+            	\item Doing a bias correction before the analysis might be more useful, but more 
+            	      investigation is needed.
+            \end{itemize}
+            \item[-] Also worth seeing if this is a feature in other LSMs.
+        \end{itemize}
+        \item[-] An interesting problem occurs with snowmelt. It seems to occur too late, and the LDAS
+                 method of handling it seems to result in no spring peak discharge from snowmelt.
+        \begin{itemize}
+        	\item[-] Worth seeing if this happens in other models or LSMs, or if it is a Euro, HTESSEL
+        	         feature.
+        	\item[-] See pages 10 -- 12 (section $3c$) for a discussion on it, and possible reasons.
+        \end{itemize}
+        \item[-] Figure 8.
+        \begin{itemize}
+        	\item[-] Note the differences in LDAS and non-LDAS are largest in the snow and river 
+        	         discharge.
+        	\item[-] Both tests seem to have a problem following the observed discharge, however.
+        \end{itemize}
+        \item[-] LDAS seems to decrease water in rivers. (Section $3e$, pages 14 -- 16, gives the
+                 exact nature of estimates. E.g., where it over and underestimates, etc. Also see
+                 Figure 9. They are omitted here as this study is for the Euro and possibly may not
+                 apply as effectively to the Noah LSM.)
+        \item[-] Large differences between LDAS and non-LDAS simulations were in snow-pack regions,
+                 but in general the results were mixed with largely similar performances.
+        \begin{itemize}
+        	\item[-] Negative bias in snow cover.
+        \end{itemize}
+        \item[-] De Lannoy et al. (2012)
+        \begin{itemize}
+        	\item[-] Showed on a small catchment in the Colorado River (western U.S.), the season
+        	         averaged snow pack is largely decreased by the snow water assimilation in the Noah
+        	         LSM.
+        \end{itemize}
+        \item[-] See Arsenault et al. (2013) for a similar thing with the CLM LSM.
+        \item[-] Errors in snow cover are potentially the largest error source for LSMs in the hydrologic
+                 cycle.
+        \item[-] Section $5b$ has an interesting discussion on hydrologic forecasting.
+    \end{itemize}
+
+    \underline{Ek et al. 2003 -- Noah LSM}
+    \begin{itemize}
+    	\item[-] The Noah LSM is, indeed, implemented in the GFS.
+    	\item[-] Table 1 for a list of Noah LSM features and additions, and associated citations for
+    	         technical and mathematical (hopefully) details.
+    	\item[-] Chen et al. (1996, section 3.1.2) for details on plant transpiration, canopy conductance,
+    	         and canopy evaporation.
+    	\item[-] See section 3.1 and equations 6 -- 7 for how bare soil evaporation is calculated.
+    	\item[-] Equations 2 -- 4 for soil heat flux calculations. Setting two values to 0 can remove
+    	         the impact of snow. The warm season coefficient is discussed more in section 3.2.
+    	\item[-] Figure 16. Dewpoint still needs work.
+    	\item[-] Interestingly, transpiration and evaporation seems to be calculated from plant and
+    	         soil conditions separately, then summed together. They are derived from a form of the
+    	         Penman equation. Thus, they are derived from the energy balance.
+    	\item[-] Upgrading and improving snow pack and frozen soil physics is important for representing
+    	         wintertime conditions.
+    	\item[-] Noted some under prediction in plant transpiration by the Noah LSM.
+    	\begin{itemize}
+    		\item[-] In offline (non-coupled) studies.
+    	\end{itemize}
+        \item[-] The Noah LSM is also being used in the WRF.
+    \end{itemize}
+
+    \underline{Chen et al. 1996 -- Transpiration Methods}
+    \begin{itemize}
+    	\item[-] Equation 3 for a diffusive form of Richard's equation (prognostic equation for soil
+    	         moisture).
+    	\begin{itemize}
+    		\item[-] Section 3.1.1 and paragraph with this equation for explanation of variables.
+    	\end{itemize}
+        \item[-] Equations 9 -- 11, and 13 -- 14, and Table 2 for canopy transpiration calculations and
+                 corresponding paragraph (pages 4 -- 5).
+        \item[-] Figures 2 -- 15 for comparisons with field data and to see some of the model output
+                 and performance.
+        \item[-] Tested against field experiment in northeastern Kansas.
+        \item[-] OSU model generally performed well, though runoff had somewhat more mixed results.
+    \end{itemize}
+
+    \underline{Wang et al. 2018 -- Sensitivity of Ensemble Models to Bias}
+    \begin{itemize}
+    	\item[-] Quantification of predictability of the atmosphere is the absolute error of the forecast
+    	         (e.g., root mean square error (RMSE))
+    	\item[-] Uncertainty is measured through ensemble spread (standard deviation, with respect to the
+    	         ensemble mean).
+    	\item[-] Range of possible solutions associated with a NWP is the ensemble distribution.
+    	\item[-] Ensemble spread is used to simulate RMSE of ensemble mean forecast, in both magnitude
+    	         and spatial structure.
+    	\item[-] In a perfect ensemble prediction, the spread and RMSE are equal (in magnitude an perfect
+    	         correlation in space).
+    	\item[-] The relationship between the forecast error and spread is called the ``spread-skill-
+    	         relationship.''
+    	\item[-] A common problem is under dispersion (ensemble spread is significantly smaller than
+    	         mean forecast error).
+    	\item[-] Models are biased due to model inherent deficiencies and errors in initial conditions
+    	         (Toth et al. 2003).
+    	\item[-] Removing the bias can enhance ensemble forecast performance (paragraph 2, page 2, several
+    	         citations to support this).
+    	\item[-] Du 2007 -- An ensemble system is designed to only deal with random errors, but not
+    	         systematic errors.
+    	\item[-] Equations 1 -- 2 and associated paragraphs (pages 2 -- 4) for bias correction methods.
+    	\item[-] Figures 1 \& 3 show how well removing the bias helps.
+    	\item[-] Figure 2 and pages 6 \& 7 on how bias was identified and how much.
+    	\item[-] While the magnitudes were much improved from debiasing, the spatial correlation was not
+    	         much improved.
+    	\item[-] Removing the bias should be done prior to verifying the ensemble forecast.
+    	\item[-] Page 10 for how the CRPS score works.
+    	\item[-] Surface variables are generally less uniform in space than upper air (did this really
+    	         need to be told?).
+    	\item[-] The bias removal improves the probabilistic forecast.
+    	\item[-] Bias should be removed before verification to prevent inaccurate interpretations and
+    	         conclusion.
+    	\item[-] Note that the bias removed is the bulk bias, not the flow bias.
+    	\begin{itemize}
+    		\item[-] Bulk bias effects the ensemble mean position in the distribution. Flow bias effects
+    		         the distribution itself.
+    	\end{itemize}
+        \item[-] It would likely be useful to recreate Figure 2 and the analysis in section $3b$ for ET,
+                 PET, and SESR in the GEFS to help determine any model bias and assess the skill (most
+                 likely have to use NARR as the truth value).
+    \end{itemize}
+
+    \underline{Zhou et al. 2017 -- GEFS Configuration}
+    \begin{itemize}
+    	\item[-] GEFS was implemented in 1993.
+    	\item[-] Note for the GEFS the spatial resolution changes after the 8 day forecast.
+    	\item[-] Also note the v10 GEFS has a 6 hour time resolution, and 3 hour time resolution for v11
+    	         (unsure which is currently operational; v11 changes to 6 hour resolution after the 8 day
+    	         forecast).
+    	\item[-] Under dispersive is still a problem.
+    	\item[-] Continuous verification method includes:
+    	\begin{itemize}
+    		\item[-] Continuous ranked probability score (CRPS)
+    		\begin{itemize}
+    			\item Measures the area difference between cumulative distributions of forecasts and
+    			      observations
+    		\end{itemize}
+    	    \item[-] RMSE/spread
+    	    \item[-] MERR (mean error/absolute error)
+    	\end{itemize}
+        \item[-] Categorical verification methods include:
+        \begin{itemize}
+        	\item[-] Brier score/Brier skill score (BS/BSS)
+        	\item[-] Reliability
+        	\item[-] Bias
+        	\item[-] Equitable threat score (ETS)
+        	\item[-] True skill score (TSS)
+        \end{itemize}
+        \item[-] Note these methods are for QPF forecasts, but see page 8 for details.
+    \end{itemize}
+\end{document}
