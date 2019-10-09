@@ -21,9 +21,9 @@ from datetime import datetime
 
 
 #%% Define the function that will extract the grb data.
-def grb_extract_data(var, TypeOfHeight, height = 0, request = False, 
-                     year = '2019', month = '06', day = '25', model_run = '00', 
-                     forecast_hour = '000', source = 'NCEI'):
+def grb_extract_data(var, TypeOfHeight, height, year, month, day, 
+                     model_run = '00', forecast_hour = '000', 
+                     request = False, source = 'NCEI'):
     if request is True:
         filename = 'gfs_3_' + year + month + day + '_' + '00' + model_run +\
                    '_' + forecast_hour + '.grb2'
@@ -31,21 +31,28 @@ def grb_extract_data(var, TypeOfHeight, height = 0, request = False,
                model_run + '.g2/'
         grb_file = path + filename
     else:
-        filename = 'gfs_3_' + year + month + day + '_' + '00' + model_run +\
-                   forecast_hour + '.grb2'
         path = '/Users/Rarrell/Downloads/tmp/'
-        if source is 'NCEI':
+        if source == 'NCEI':
+            filename = 'gfs_3_' + year + month + day + '_' + '00' + model_run +\
+                   forecast_hour + '.grb2'
             url_start = 'https://nomads.ncdc.noaa.gov/data/gfs-avn-hi/'
             url_end   = year + month + '/' + year + month + day +'/' + filename
             url = url_start + url_end
-        elif source is 'NCEP':
-            urlstuff
+        elif source == 'NCEP':
+            filename  = 'gfs.t' + model_run + 'z.pgrb2.1p00.f' + forecast_hour
+            url_start = 'https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/'
+            url_end   = 'gfs.' + year + month + day + '/' + model_run + '/' +\
+                        filename
+            url = url_start + url_end
         else:
-            error message
+            print('Error: The data should come from NCEI or NCEP.')
+            sys.exit(1) # Exit the program if this happens.
         
         wget.download(url, path + filename)
+        
+        grb_file = path + filename
     
-    gfs = pygrib.open(path + filename)
+    gfs = pygrib.open(grb_file)
     
     VarMsg = gfs.select(name = var, typeOfLevel = TypeOfHeight, level = height)
     
@@ -54,7 +61,7 @@ def grb_extract_data(var, TypeOfHeight, height = 0, request = False,
     VarFH    = VarMsg[0].forecastTime
     VarVD    = VarMsg[0].validDate
     VarName  = VarMsg[0].name
-    VarSName = varMsg[0].shortName
+    VarSName = VarMsg[0].shortName
     
     lat, lon = VarMsg[0].latlons()
     
