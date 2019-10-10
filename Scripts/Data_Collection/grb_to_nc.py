@@ -20,29 +20,55 @@ from glob import glob
 from datetime import datetime
 
 
+#%% Define the main function
+def main():
+    script = sys.argv[0]
+    parameters = sys.argv[1]
+    ForecastHour = sys.argv[2]
+    
+    request = np.loadtxt(parameters, usecols = 0, delimiter = ',')
+    year, month, day, source, var, TypeOfHeight =\
+        np.loadtxt(parameters, usecols = np.arange(1,6+1), 
+                   dtype = str, delimiter = ',')
+    height  = np.loadtxt(parameters, usecols = 7, delimiter = ',')
+    model_run = np.loadtxt(parameters, usecols = 8, dtype = str, delimiter = ',')
+    
+    VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask =\
+        grb_extract_data(var = var, TypeOfHeight = TypeOfHeight, 
+                         height = height, year = year, month = month, day = day,
+                         model_run = model_run, forecast_hour = ForecastHour,
+                         request = request, source = source)
+    
+    create_tmp_nc(VarData = VarData, lat = lat, lon = lon, VarUnits = VarUnits,
+                  VarFH = VarFH, VarVD = VarVD, VarName = VarName, 
+                  VarSName = VarSName, Mask = Mask, TypeOfHeight = TypeOfHeight)
+     
+
 #%% Define the function that will extract the grb data.
 def grb_extract_data(var, TypeOfHeight, height, year, month, day, 
                      model_run = '00', forecast_hour = '003', 
                      request = False, source = 'NCEI'):
     if request is True:
-        filename = 'gfs_3_' + year + month + day + '_' + '00' + model_run +\
-                   '_' + forecast_hour + '.grb2'
-        path = '/Users/Rarrell/Downloads/gfs_3_' + year + month + day +\
-               model_run + '.g2/'
+        filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' + '00' +\
+        str(model_run) + '_' + str(forecast_hour) + '.grb2'
+        path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
+               str(day) + str(model_run) + '.g2/'
         grb_file = path + filename
     else:
         path = '/Users/Rarrell/Downloads/tmp/'
-        if source == 'NCEI':
-            filename = 'gfs_3_' + year + month + day + '_' + model_run + '00' + \
-                   '_' + forecast_hour + '.grb2'
+        if source == np.str('NCEI'):
+            filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' +\
+                   str(model_run) + '00' + '_' + str(forecast_hour) + '.grb2'
             url_start = 'https://nomads.ncdc.noaa.gov/data/gfs-avn-hi/'
-            url_end   = year + month + '/' + year + month + day +'/' + filename
+            url_end   = str(year) + str(month) + '/' + str(year) + str(month) +\
+                        str(day) +'/' + filename
             url = url_start + url_end
         elif source == 'NCEP':
-            filename  = 'gfs.t' + model_run + 'z.pgrb2.1p00.f' + forecast_hour
+            filename  = 'gfs.t' + str(model_run) + 'z.pgrb2.1p00.f' +\
+                        str(forecast_hour)
             url_start = 'https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/'
-            url_end   = 'gfs.' + year + month + day + '/' + model_run + '/' +\
-                        filename
+            url_end   = 'gfs.' + str(year) + str(month) + str(day) + '/' +\
+                        str(model_run) + '/' + filename
             url = url_start + url_end
         else:
             print('Error: The data should come from NCEI or NCEP.')
@@ -119,3 +145,7 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
         nc.createVariable('mask', Mask.dtype, ('lat', 'lon'))
         nc.variables['mask'][:,:] = Mask[:,:]
 
+#%% Call the main function
+
+if __name__ == '__main__':
+    main()
