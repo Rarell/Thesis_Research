@@ -119,11 +119,3 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
         nc.createVariable('mask', Mask.dtype, ('lat', 'lon'))
         nc.variables['mask'][:,:] = Mask[:,:]
 
-#%% Test these functions
-VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask = grb_extract_data(
-        var = 'Potential evaporation rate', TypeOfHeight = 'surface',
-        height = 0, year = '2019', month = '07', day = '03')
-#%%
-
-create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName,
-              Mask, TypeOfHeight = 'surface')
