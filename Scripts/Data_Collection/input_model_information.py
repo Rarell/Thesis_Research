@@ -136,23 +136,91 @@ def determine_source(year, month, day):
     return source, request
 
 #%% Create a new function to prompt for variable information.
+def input_model_variables():
+    
+    # Collect the valid input options
+    path = '/Users/Rarrell/Desktop/Thesis_Research/Scripts/Data_Collection/txt_files/'
+    ValidVar = np.loadtxt(path + 'GFS_VarNames.txt', dtype = str, delimiter = ',')
+    ValidTypeOfHeights = np.loadtxt(path + 'GFS_TypeOfHeights.txt', dtype = str,
+                                    delimiter = ',')
+    ValidHeights = np.loadtxt(path + 'GFS_Heights.txt', dtype = str, delimiter = ',')
+    
+    
+    # Prompt for the variable name
+    Var = input('Please enter the variable to be extract. ' +\
+                'See GFS_Variable_Names.txt for a list of options. \n'  )
+    # Check the input is valid
+    try:
+        n = 0
+        for ValVar in ValidVar:
+            if Var == ValVar:
+                n = n + 1
+            else: 
+                n = n
+        
+        if n == 1:
+            pass
+        else:
+            raise InputError(Var + ' is not a valid name. ' +\
+                             'See GFS_Variable_Names.txt for a list of valid ' +\
+                             'options.')
+    
+    except InputError as ie:
+        raise InputError(ie)
 
-# Prompt for the variable name
-Var = input('Please enter the variable to be extract. ' +\
-            'See GFS_Variable_Names.txt for a list of options.'  )
-# Check the input is valid
 
+    # Prompt the user for the type of height
+    TypeOfHeight = input('Please enter the type of height the variable is located' +\
+                         'at. See GFS_Type_Of_Heights.txt for a list of options. \n'  )
+    # Check the input is valid
+    try:
+        n = 0
+        for ValToH in ValidTypeOfHeights:
+            if TypeOfHeight == ValToH:
+                n = n + 1
+            else:
+                n = n
+        
+        if n == 1:
+            pass
+        else:
+            raise InputError(TypeOfHeight + ' is not a valid type of height. ' +\
+                             'See GFS_Type_Of_Heights.txt for a list of valid ' +\
+                             'options.')
+    
+    except InputError as ie:
+        raise InputError(ie)
+    
+    # Prompt the user for the height
+    height = input('Type in the height the variable is located at. The units ' +\
+                   '(e.g. Pa, km, PVU, etc.) is determined by the type of height.' +\
+                   'If the type of height is the surface, then the height is 0. \n'  )
+    # Check the input is valid
+    try:
+        if (TypeOfHeight == 'surface') & (height != '0'):
+            raise InputError('The height must be 0 if the TypeOfHeight is surface.')
+        else:
+            pass  
+        
+        n = 0
+        for ValHeight in ValidHeights:
+            if (height + '.0') == ValHeight:
+                n = n + 1
+            else:
+                n = n
+        
+        if n == 1:
+            pass
+        else:
+            raise InputError(height + ' is not a valid height. See ' +\
+                             'GFS_Height_Values.txt for a list of valid options.')
+    
+    except InputError as ie:
+        raise InputError(ie)
+    
+    return Var, TypeOfHeight, height
 
-TypeOfHeight = input('Please enter the type of height the variable is located' +\
-                     'at. See GFS_Type_Of_Heights.txt for a list of options.'  )
-# Check the input is valid
-
-# Prompt the user for the height
-height = input('Type in the height the variable is located at. The units ' +\
-               '(e.g. Pa, km, PVU, etc.) is determined by the type of height.' +\
-               'If the type of height is the surface, then the height is 0.'  )
-# Check the input is valid
-
+#%% Define a function to append the tmp file with the model information.
 
 
 
