@@ -1,0 +1,1 @@
+atmosphere,depthBelowLandLayer,heightAboveGround,heightAboveGroundLayer,heightAboveSea,isobaricInhPa,isothermZero,maxWind,meanSea,nominalTop,potentialVorticity,pressureFromGroundLayer,sigma,sigmaLayer,surface,tropopause,unknown

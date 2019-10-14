@@ -72,11 +72,37 @@ for name in VarNameUniq:
 
 f.close()
 
+# This file is for operational use in codes. The new line add an empty column
+# that makes the easier to read versions more difficult to use practically in
+# codework.
+f = open('GFS_VarNames.txt', 'w')
+
+for name in VarNameUniq:
+    if name == VarNameUniq[-1]:
+        f.write(name)
+    else:
+        f.write(name + ',')
+
+f.close()
+
 #%% Write the type of heights to a .txt file.
-f = open('GFS_TypeOfHeights.txt', 'w')
+f = open('GFS_Type_Of_Heights.txt', 'w')
 
 for typeOfHeight in TypeOfHeightUniq:
     f.write(typeOfHeight + ',\n')
+
+f.close()
+
+# This file is for operational use in codes. The new line add an empty column
+# that makes the easier to read versions more difficult to use practically in
+# codework.
+f = open('GFS_TypeOfHeights.txt', 'w')
+
+for typeOfHeight in TypeOfHeightUniq:
+    if typeOfHeight == TypeOfHeightUniq[-1]:
+        f.write(typeOfHeight)
+    else:
+        f.write(typeOfHeight + ',')
 
 f.close()
 
@@ -85,6 +111,19 @@ f = open('GFS_Height_Values.txt', 'w')
 
 for height in HeightsUniq:
     f.write(str(height) + ',\n')
+
+f.close()
+
+# This file is for operational use in codes. The new line add an empty column
+# that makes the easier to read versions more difficult to use practically in
+# codework.
+f = open('GFS_Heights.txt', 'w')
+
+for height in HeightsUniq:
+    if height == HeightsUniq[-1]:
+        f.write(str(height))
+    else:
+        f.write(str(height) + ',')
 
 f.close()
 
@@ -115,5 +154,18 @@ f = open('GFS_Forecast_Times.txt', 'w')
 
 for ForecastTime in FT:
     f.write(ForecastTime + ',\n')
+    
+f.close()
+
+# This file is for operational use in codes. The new line add an empty column
+# that makes the easier to read versions more difficult to use practically in
+# codework.
+f = open('GFS_FH.txt', 'w')
+
+for ForecastTime in FT:
+    if ForecastTime == FT[-1]:
+        f.write(ForecastTime)
+    else:
+        f.write(ForecastTime + ',')
     
 f.close()
