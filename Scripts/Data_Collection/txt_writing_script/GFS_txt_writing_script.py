@@ -87,3 +87,33 @@ for height in HeightsUniq:
     f.write(str(height) + ',\n')
 
 f.close()
+
+#%% Write a .txt file for the forecast time.
+# Note, starting June 14, 2019 the GFS forecasts became a consistent
+# 3 hour intervals from 000 to 384. Might modify this for those later.
+
+# Initialize the forecast hours. It has 92 values (excluding 000).
+FT = ['tmp'] * 92
+n = 0
+
+for i in range(3, 240+3, 3):
+    if i < 10:
+        FT[n] = '00' + str(i)
+    elif (i < 100) & (i > 10):
+        FT[n] = '0' + str(i)
+    else:
+        FT[n] = str(i)
+    n = n + 1
+
+for i in range(240+12, 384+12, 12):
+    FT[n] = str(i)
+    n = n + 1
+
+print(FT)
+
+f = open('GFS_Forecast_Times.txt', 'w')
+
+for ForecastTime in FT:
+    f.write(ForecastTime + ',\n')
+    
+f.close()
