@@ -11,6 +11,17 @@ import sys, os, warnings
 import numpy as np
 from datetime import datetime, timedelta
 
+#%% Create the main function
+def main():
+    year, month, day, ModelRun = collect_date()
+    
+    source, request = determine_source(year, month, day)
+    
+    Var, TypeOfHeight, height = input_model_variables()
+    
+    write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
+              ModelRun)
+
 
 #%% Create an error class for inpurt errors.
 class InputError(Exception):
@@ -88,8 +99,24 @@ def collect_date():
                 pass
     except InputError as ie:
         raise InputError(ie)
+        
+    # Input the user for the model run
+    ModelRun = input('Input the desired model (either 00, 06, 12, or 18):'  )
+    # Check the input
+    try:
+        if ((ModelRun == '00') | (ModelRun == '06') | (ModelRun == '12') | 
+                (ModelRun == '18')):
+            pass
+        else:
+            raise InputError('There only 00Z, 06Z, 12Z, and 18Z model runs. ' +\
+                            'Please try again with 00, 06, 12, or 18.')
     
-    return year, month, day
+    except InputError as ie:
+        raise InputError(ie)
+              
+                
+    
+    return year, month, day, ModelRun
 
 #%% Create a function to determine the data source (NCEI or NCEP)
 def determine_source(year, month, day):
@@ -221,7 +248,24 @@ def input_model_variables():
     return Var, TypeOfHeight, height
 
 #%% Define a function to append the tmp file with the model information.
+def write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
+              ModelRun):
+    path = '/Users/Rarrell/Desktop/Thesis_Research/'
+    f = open(path + 'tmp.txt', 'a')
+    
+    f.write(str(request) + ',')
+    f.write(year + ',')
+    f.write(month + ',')
+    f.write(day + ',')
+    f.write(source + ',')
+    f.write(Var + ',')
+    f.write(TypeOfHeight + ',')
+    f.write(height + ',')
+    f.write(ModelRun)
+    
+    f.close()
 
 
-
-
+#%% Call the main function
+if name == '__main__':
+    main()
