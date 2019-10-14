@@ -93,4 +93,67 @@ def collect_date():
 
 #%% Create a function to determine the data source (NCEI or NCEP)
 def determine_source(year, month, day):
-    return something
+    
+    # Initialize some check variables.
+    Request_page = 'https://www.ncdc.noaa.gov/has/HAS.FileAppRouter?' +\
+                   'datasetname=GFS3&subqueryby=STATION&applname=&outdest=FILE'
+    NCEI_source  = 'https://nomads.ncdc.noaa.gov/data/gfs-avn-hi/'
+    NCEP_source  = 'https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/'
+    
+    DeltaYear = timedelta(days = 365)
+    DeltaWeek = timedelta(days = 7)
+    
+    date = datetime(int(year), int(month), int(day))
+    
+    DeltaTime = datetime.now() - date
+    
+    # Check if a data request is needed
+    if DeltaTime > DeltaYear:
+        # Ensure the user knows to make a request for old data.
+        print('The requested date is over 1 year old. A data request is ' +\
+              'required for this. This can be made at: \n' +\
+              Request_page + '\n' +\
+              'Please ensure the request is made, the ' +\
+              '.g2 file is downloaded and unzipped in the Downloads ' +\
+              'directory. Failing to do so can result in an error and ' +\
+              'termination of the program.')
+        
+        request = 1
+        source = None
+    else:
+        request = 0
+        
+        # Check if the data should come from the NCEI or NCEP
+        if DeltaTime > DeltaWeek:
+            print('Data will be downloaded from the NCEI database. This is ' +\
+                  'located at: \n' + NCEI_source)
+            source = 'NCEI'
+        else:
+            print('New data will be downloaded from the NCEP database. ' +\
+                  'This is located at: \n' + NCEP_source)
+            source = 'NCEP'
+
+    return source, request
+
+#%% Create a new function to prompt for variable information.
+
+# Prompt for the variable name
+Var = input('Please enter the variable to be extract. ' +\
+            'See GFS_Variable_Names.txt for a list of options.'  )
+# Check the input is valid
+
+
+TypeOfHeight = input('Please enter the type of height the variable is located' +\
+                     'at. See GFS_Type_Of_Heights.txt for a list of options.'  )
+# Check the input is valid
+
+# Prompt the user for the height
+height = input('Type in the height the variable is located at. The units ' +\
+               '(e.g. Pa, km, PVU, etc.) is determined by the type of height.' +\
+               'If the type of height is the surface, then the height is 0.'  )
+# Check the input is valid
+
+
+
+
+
