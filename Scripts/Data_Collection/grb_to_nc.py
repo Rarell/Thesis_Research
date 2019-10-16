@@ -42,6 +42,9 @@ def main():
     create_tmp_nc(VarData = VarData, lat = lat, lon = lon, VarUnits = VarUnits,
                   VarFH = VarFH, VarVD = VarVD, VarName = VarName, 
                   VarSName = VarSName, Mask = Mask, TypeOfHeight = TypeOfHeight)
+    
+    if str(ForecastHour) == '003':
+        append_tmp(VarSName)
      
 
 #%% Define the function that will extract the grb data.
@@ -144,6 +147,16 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
         
         nc.createVariable('mask', Mask.dtype, ('lat', 'lon'))
         nc.variables['mask'][:,:] = Mask[:,:]
+
+#%% Create a function to append the tmp file.
+def append_tmp(VSName):
+    path = '/Users/Rarrell/Desktop/Thesis_Research/'
+    
+    f = open(path + 'tmp.txt', 'a')
+    
+    f.write(',' + VSName)
+    
+    f.close()
 
 #%% Call the main function
 
