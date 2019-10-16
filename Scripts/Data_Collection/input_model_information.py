@@ -267,5 +267,5 @@ def write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
 
 
 #%% Call the main function
-if name == '__main__':
+if __name__ == '__main__':
     main()
