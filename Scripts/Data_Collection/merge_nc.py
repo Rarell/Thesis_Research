@@ -68,7 +68,8 @@ def load_nc(VarSName, file, VarFH):
 #%% Define a function to load the .nc files.
 def load_multiple_nc(VarSName, FH):
 
-    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
+#    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
+    path = './Data/tmp/'
     # Load in a temporary file.
     with Dataset(path + 'GFS_' + str(VarSName) + '_6.nc', 'r') as nc:
         tmp = nc.variables[str(VarSName)][:,:]
@@ -98,7 +99,8 @@ def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
              year, month, day, ModelRun, TypeOfHeight):
     filename = 'GFS_' + str(VarSName) + '_' + str(year) + str(month) +\
                str(day) + '_' + str(ModelRun) + '.nc'
-    path = '/Users/Rarrell/Desktop/Thesis_Research/Data/'
+#    path = '/Users/Rarrell/Desktop/Thesis_Research/Data/'
+    path = './Data/'
     
     J, I , T = Var.shape
     

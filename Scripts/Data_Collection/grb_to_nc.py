@@ -58,7 +58,8 @@ def grb_extract_data(var, TypeOfHeight, height, year, month, day,
                str(day) + str(model_run) + '.g2/'
         grb_file = path + filename
     else:
-        path = '/Users/Rarrell/Downloads/tmp/'
+#        path = '/Users/Rarrell/Downloads/tmp/'
+        path = './Data/tmp/'
         if source == np.str('NCEI'):
             filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' +\
                    str(model_run) + '00' + '_' + str(forecast_hour) + '.grb2'
@@ -102,6 +103,7 @@ def grb_extract_data(var, TypeOfHeight, height, year, month, day,
     VarData[JMask, IMask] = 0
     
     gfs.close()
+    os.remove(path + filename)
     return VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask
 
 
@@ -110,7 +112,8 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
                   VarSName, Mask, TypeOfHeight):
     filename = 'GFS_' + VarSName + '_' +\
                    str(VarFH) + '.nc'
-    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
+    path = './Data/tmp/'
+#    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
         
     J, I = VarData.shape
         
@@ -150,7 +153,8 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
 
 #%% Create a function to append the tmp file.
 def append_tmp(VSName):
-    path = '/Users/Rarrell/Desktop/Thesis_Research/'
+    path = './'
+    #path = '/Users/Rarrell/Desktop/Thesis_Research/'
     
     f = open(path + 'tmp.txt', 'a')
     

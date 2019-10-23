@@ -101,7 +101,7 @@ def collect_date():
         raise InputError(ie)
         
     # Input the user for the model run
-    ModelRun = input('Input the desired model (either 00, 06, 12, or 18):'  )
+    ModelRun = input('Input the desired model (either 00, 06, 12, or 18):  ')
     # Check the input
     try:
         if ((ModelRun == '00') | (ModelRun == '06') | (ModelRun == '12') | 
@@ -147,6 +147,9 @@ def determine_source(year, month, day):
         
         request = 1
         source = None
+        
+        # Use try here to see if the file exists. Prompt the user to make the
+        # data request if not and exit the program.
     else:
         request = 0
         
@@ -250,14 +253,15 @@ def input_model_variables():
 #%% Define a function to append the tmp file with the model information.
 def write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
               ModelRun):
-    path = '/Users/Rarrell/Desktop/Thesis_Research/'
+#    path = '/Users/Rarrell/Desktop/Thesis_Research/'
+    path = './'
     f = open(path + 'tmp.txt', 'a')
     
     f.write(str(request) + ',')
     f.write(year + ',')
     f.write(month + ',')
     f.write(day + ',')
-    f.write(source + ',')
+    f.write(str(source) + ',')
     f.write(Var + ',')
     f.write(TypeOfHeight + ',')
     f.write(height + ',')
