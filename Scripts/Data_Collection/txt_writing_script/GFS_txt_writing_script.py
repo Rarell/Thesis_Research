@@ -153,7 +153,7 @@ print(FT)
 f = open('GFS_Forecast_Times.txt', 'w')
 
 for ForecastTime in FT:
-    f.write(ForecastTime + ',\n')
+    f.write(ForecastTime + '\n')
     
 f.close()
 
