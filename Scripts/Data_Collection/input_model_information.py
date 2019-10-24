@@ -9,13 +9,14 @@ Created on Mon Oct 14 14:15:07 2019
 #%% Import some libraries
 import sys, os, warnings
 import numpy as np
+import pygrib
 from datetime import datetime, timedelta
 
 #%% Create the main function
 def main():
     year, month, day, ModelRun = collect_date()
     
-    source, request = determine_source(year, month, day)
+    source, request = determine_source(year, month, day, ModelRun)
     
     Var, TypeOfHeight, height = input_model_variables()
     
@@ -28,6 +29,13 @@ class InputError(Exception):
     """This is raised when there is an error in the user input"""
     pass
 
+#%% Create a function to count the characters in a string.
+def CharCount(string):
+    count = 0
+    for c in string:
+        count = count + 1
+    
+    return count
 #%% Define a function to collect the date
 def collect_date():
     # Prompt the user for the desired year.
@@ -64,6 +72,12 @@ def collect_date():
             raise InputError
     except InputError:
         raise InputError('The month must be between 1 and 12.')
+        
+    month_count = CharCount(month)
+    if (int(month) < 10) & (month_count < 2):
+        month = '0' + month
+    else:
+        pass
     
     # Prompt the user for the desired day
     day = input('Enter the day of the model run (between 1 and 31):  ')
@@ -100,6 +114,12 @@ def collect_date():
     except InputError as ie:
         raise InputError(ie)
         
+    day_count = CharCount(day)
+    if (int(day) < 10) & (day_count < 2):
+        day = '0' + day
+    else:
+        pass
+        
     # Input the user for the model run
     ModelRun = input('Input the desired model (either 00, 06, 12, or 18):  ')
     # Check the input
@@ -119,7 +139,7 @@ def collect_date():
     return year, month, day, ModelRun
 
 #%% Create a function to determine the data source (NCEI or NCEP)
-def determine_source(year, month, day):
+def determine_source(year, month, day, ModelRun):
     
     # Initialize some check variables.
     Request_page = 'https://www.ncdc.noaa.gov/has/HAS.FileAppRouter?' +\
@@ -141,12 +161,28 @@ def determine_source(year, month, day):
               'required for this. This can be made at: \n' +\
               Request_page + '\n' +\
               'Please ensure the request is made, the ' +\
-              '.g2 file is downloaded and unzipped in the Downloads ' +\
-              'directory. Failing to do so can result in an error and ' +\
-              'termination of the program.')
+              '.g2 file is downloaded and unzipped in the Data ' +\
+              'directory.')
         
         request = 1
         source = None
+        
+        try:
+            filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' +\
+                       '00' + str(ModelRun) + '_003.grb2'
+            path = './Data/gfs_3_' + str(year) + str(month) + str(day) +\
+                   str(ModelRun) + '.g2/'
+#           path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
+#                  str(day) + str(model_run) + '.g2/'
+            grb_file = path + filename
+            
+            grb = pygrib.open(grb_file)
+            grb.close()
+        except OSError:
+            raise OSError('.grb2 folder not found in the Data folder.' +\
+                          'Please make to make the request at: \n' +\
+                          Request_page + '\n' +\
+                          'and download the data to the Data folder.')
         
         # Use try here to see if the file exists. Prompt the user to make the
         # data request if not and exit the program.
