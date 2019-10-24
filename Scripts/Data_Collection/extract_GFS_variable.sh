@@ -12,6 +12,14 @@ mkdir ./Data/tmp
 echo 'Collecting date and variable information'
 python ./Scripts/Data_Collection/input_model_information.py
 
+if [ -s ./tmp.txt ]
+then
+    :
+else
+    echo 'An error occured. See the above message.'
+    exit 1
+fi
+
 # Loop over all the forecast hours. For each hour, extract the variable and place in a
 # temporary file.
 while read FH
