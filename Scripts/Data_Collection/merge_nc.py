@@ -5,22 +5,45 @@ Created on Thu Oct 10 16:09:42 2019
 
 @author: Rarrell
 
-This is a script designed to take the temporary .nc files created and merge
-them into a single .nc file over all forecast hours.
+This is a script designed as a component of the extract_GFS_variable.sh program.
+This is a script designed to take the temporary .nc files created in the
+  grb_to_nc script and merge them into a single .nc file over all forecast hours.
+  This is the final output (and goal) of the extract_GFS_variable.sh program
+  for use by the user.
+  
+Arguements:
+    parameters - The temporary .txt file from input_model_information. It 
+                 contains request, year, month, day, source, var, TypeOfHeight,
+                 height, model_run, and VarSName in that order.
+    ForecastHour - A .txt file containing all forecast hours in the GFS model run.
 """
 
-#%% Load modules
+#%%
+#####################################
+### Import some libraries ###########
+#####################################
+
 import os, sys, warnings
 import numpy as np
 from netCDF4 import Dataset
 from glob import glob
 
-#%% Define the main function
+#%% 
+############################
+### Main Function ##########
+############################
 def main():
+    '''
+    This is the main function. It loads the arguements, loads the temporary
+      .nc files, and writes all the data in a single, combined .nc file.
+    '''
+    
+    # Load arguements
     script = sys.argv[0]
     parameters = sys.argv[1]
     ForecastHour = sys.argv[2]
     
+    # Unpack the .txt file to obtain the model information 
     year, month, day, source, VarName, TypeOfHeight =\
         np.loadtxt(parameters, usecols = np.arange(1, 6+1), dtype = str, 
                    delimiter = ',')
@@ -28,20 +51,41 @@ def main():
     ModelRun, VarSName = np.loadtxt(parameters, usecols = np.arange(8, 9+1), 
                                     dtype = str, delimiter = ',')
     
+    # Unpack the .txt file containing all the forecast hours
     FH = np.loadtxt(ForecastHour, dtype = str, delimiter = ',')
     
+    # Load all the temporary .nc files and place them in a single set of variables
     Var, VarFH, lat, lon, VarVD, mask, units = load_multiple_nc(VarSName, FH)
     
+    # Write a single .nc file containing the data for all forecast hours
     write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
              year, month, day, ModelRun, TypeOfHeight)
     
 
-#%% Define a function to load in netcdf files.
+#%%
+#############################
+### load_nc Function ########
+#############################
+    
 def load_nc(VarSName, file, VarFH):
+    '''
+    This function loads one of the temporary .nc files created in the grb_to_nc
+      script. Some information is only loaded once as it is only needed once
+      for the complete dataset.
+    
+    Inputs:
+        VarSName - Variable short name
+        file - The name of the .nc file
+        VarFH - The forecast hour for the data
+    '''
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
 #    filename = 'GFS_' + str(VarSName) + '_' +\
 #                  str(VarFH) + '.nc'
+    
+    # Open the temporary .nc file
     with Dataset(file, 'r') as nc:
+        # For the complete dataset, only 1 lat/lon grid, mask, units, and
+        #   valid date are needed. Load them only once.
         if str(VarFH) == '003':
             lat = nc.variables['lat'][:]
             lon = nc.variables['lon'][:]
@@ -55,9 +99,15 @@ def load_nc(VarSName, file, VarFH):
         else:
             pass
         
+        # Load the forecast hour
         FH = nc.variables['FH'][:]
-    
+        
+        # Load the variable data. Note that it is in lat x lon format
         Var = nc.variables[str(VarSName)][:,:]
+    
+    #######################
+    ### End of Function ###
+    #######################
     
     if str(VarFH) == '003':
         return Var, FH, lat, lon, VD, mask, units
@@ -65,26 +115,51 @@ def load_nc(VarSName, file, VarFH):
         return Var, FH
     
 
-#%% Define a function to load the .nc files.
+#%%
+####################################
+### load_multiple_nc Function ######
+####################################
+
 def load_multiple_nc(VarSName, FH):
+    '''
+    This function loads all the temporary .nc files created in the grb_to_nc
+      script and places the information in a single set of variables.
+      
+    Inputs:
+        VarSName - Variable short name
+        FH - Vector of all forecast hours in the model run
+    
+    Outputs:
+        Var - Variable data in a lat x lon x forecast hour/time format.
+        VarFH - Vector of all forecast hours in the model run
+        lat - Vector of all latitudes
+        lon - Vector of all longitudes
+        VarVD - Valid date for the model run
+        mask - Gridded land-sea mask (lat x lon format)
+        units - Variable units
+    '''
 
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
+    
+    # Load a temporary file to collect the time and space dimensions
     path = './Data/tmp/'
-    # Load in a temporary file.
+    
+    # Load a temporary file
     with Dataset(path + 'GFS_' + str(VarSName) + '_6.nc', 'r') as nc:
         tmp = nc.variables[str(VarSName)][:,:]
     
-    # Initialize some values.
+    # Collect dimensions
     T = len(glob(path + 'GFS_' + str(VarSName) + '_*.nc'))
     J, I = tmp.shape
     
+    # Initialize variables
     VarFH = np.ones((T, )) * np.nan
     lat = np.ones((J, )) * np.nan
     lon = np.ones((I, )) * np.nan
     Var = np.ones((J, I, T)) * np.nan
     mask = np.ones((J, I)) * np.nan
     
-    # Load in all data points
+    # Load all temporary .nc files
     for n, file in enumerate(glob(path + 'GFS_' + str(VarSName) + '_*.nc')):
         if FH[n] == '003':
             Var[:,:,n], VarFH[n], lat[:], lon[:], VarVD, mask, units =\
@@ -92,19 +167,54 @@ def load_multiple_nc(VarSName, FH):
         else:
             Var[:,:,n], VarFH[n] = load_nc(VarSName, file, FH[n])
     
+    #######################
+    ### End of Function ###
+    #######################
+    
     return Var, VarFH, lat, lon, VarVD, mask, units
 
-#%% Define a function to write the combined data.
+#%%
+#############################
+### write_nc Function #######
+#############################
+
 def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
              year, month, day, ModelRun, TypeOfHeight):
+    '''
+    This function takes the complete model run data for a single variable
+      collected in load_multiple_nc and writes it to a single .nc file for user
+      use.
+      
+    Inputs:
+        VarSName - Variable short name
+        VarName  - Variable long name
+        Var - Main variable data (lat x lon x forecast hour/tim format)
+        VarFH - Vector of forecast hours
+        lat - Vector of latitudes
+        lon - Vector of longitudes
+        VarVD - Variable valid date
+        mask  - Gridded land-sea mask (lat x lon format)
+        units - Units of the variable
+        year  - Year the model run is valid for
+        month - Month the model is valid for
+        day   - Day the model is valid for
+        ModelRun - The model run the model is valid for
+        TypeOfHeight - The type of height the variable is located at
+    '''
+    
+    # Create the .nc file name based on the date, model run, and variable short
+    #   name
     filename = 'GFS_' + str(VarSName) + '_' + str(year) + str(month) +\
                str(day) + '_' + str(ModelRun) + '.nc'
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/Data/'
     path = './Data/'
     
+    # Collect the variable dimensions
     J, I , T = Var.shape
     
+    # Begin writing the .nc file
     with Dataset(path + filename, 'w', format = 'NETCDF4') as nc:
+        # Write the main description for the model variable data.
         nc.description = 'GFS forecast data for ' + VarName + ' valid for ' +\
                          day + '-' + month + '-' + year + '. The variable is ' +\
                          'given for all forecast hours.\n' +\
@@ -153,7 +263,18 @@ def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
         nc.createVariable('mask', mask.dtype, ('lat', 'lon'))
         nc.variables['mask'][:,:] = mask[:,:]
         
-#%% Call the main functions
+        #######################
+        ### End of Function ###
+        #######################
+        
+#%%
+#########################################
+### Call and Run the Main Function ######
+#########################################
         
 if __name__ == '__main__':
     main()
+    
+#####################
+### End of Script ###
+#####################
