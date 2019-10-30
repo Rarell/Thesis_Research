@@ -15,13 +15,13 @@ mkdir ./Data/tmp
 echo 'Collecting date and variable information'
 python ./Scripts/Data_Collection/input_model_information.py
 
-# If an error occured in the script, end the program. The tmp file will be empty if there
+# If an error occurred in the script, end the program. The tmp file will be empty if there
 #   was an error. Reference the python error message to determine the error.
 if [ -s ./tmp.txt ]
 then
     :
 else
-    echo 'An error occured. See the above message.'
+    echo 'An error occurred. See the above message.'
     exit 1
 fi
 
