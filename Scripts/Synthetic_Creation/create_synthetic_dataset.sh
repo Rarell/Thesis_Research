@@ -39,17 +39,16 @@ while read tmp
     echo $tmp
     
     # Download the grib file. Note many surface variables are not calculated until the
-    #   3 hour forecast, so the three hour forecast is downloaded. Additionally, some 
-    #   variables (e.g., latent heat flux) are calculated for the previous time step. So
-    #   download the following time step (6 hour forecast) as well.
+    #   3 hour forecast, so the three hour forecast is downloaded. Note some variables are
+    #   a 0 - 3 hour average (e.g., latent heat flux).
     python ./Scripts/Synthetic_Creation/GFS_Download.py 003 $tmp
-    python ./Scripts/Synthetic_Creation/GFS_Download.py 006 $tmp
+#    python ./Scripts/Synthetic_Creation/GFS_Download.py 006 $tmp
     
     # From the grib files, extract the required variables needed for a specific indice, 
     #   and place them in a temporary netcdf file in the Data/tmp/ folder.
     if [ "$@" = 'SESR' ]
     then
-    	python ./Scripts/Synthetic_Creation/extract_grb_variable.py 'Latent heat net flux' 'surface' '0' '006' $tmp
+    	python ./Scripts/Synthetic_Creation/extract_grb_variable.py 'Latent heat net flux' 'surface' '0' '003' $tmp
     	python ./Scripts/Synthetic_Creation/extract_grb_variable.py 'Potential evaporation rate' 'surface' '0' '003' $tmp
     fi
     

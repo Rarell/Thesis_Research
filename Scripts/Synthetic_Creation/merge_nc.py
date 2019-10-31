@@ -207,7 +207,7 @@ def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
     #   name.
     # Note that ed stands for end date
     filename = 'GFS_' + str(VarSName) + '_ed_' + str(Years[-1]) +\
-               str(Months[-1]) + str(Days[-1]) + '_.nc'
+               str(Months[-1]) + str(Days[-1]) + '.nc'
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/Data/'
     path = './Data/Synthetic_Data/'
     
@@ -218,10 +218,10 @@ def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
     with Dataset(path + filename, 'w', format = 'NETCDF4') as nc:
         # Write the main description for the model variable data.
         nc.description = 'GFS forecast data for ' + VarName + ' valid from ' +\
-                         str(VarVD[0]) + 'to' + str(VarVD[-1]) + '. The variable ' +\
-                         'is given a minimum 4 week period and is composed of 3 ' +\
+                         str(VarVD[0]) + ' to ' + str(VarVD[-1]) + '. The variable ' +\
+                         'is given for at least a 4 week period and is composed of 3 ' +\
                          'hour forecasts across multiple model runs.\n' +\
-                         'Variable: ' + VarName +'(' + units + '). This variable ' +\
+                         'Variable: ' + VarName +' (' + units + '). This variable ' +\
                          'is in the format of lat x lon x time.\n' +\
                          'mask: Land - sea mask. sea = 0, land = 1.\n' +\
                          'FH: Forecast hour (hour). The hour at which the ' +\
