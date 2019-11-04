@@ -4,10 +4,19 @@
 Created on Wed Oct 30 11:11:24 2019
 
 @author: Rarrell
+
+This script is designed as part of the create_synthetic_dataset.sh program.
+This script takes in the latent heat (LE) and potential evaporation rate (PET)
+  netcdf files made earlier in the create_sythetic_dataset program and calculate
+  the standardized evaporative stress ratio (SESR). SESR is calculated on a
+  daily basis using both daily averaged LE and PET, and daily summed LE and PET.
+  The daily SESR data is placed in a netcdf file for use by the user.
 """
 
 #%%
- # Load some libraries
+#####################################
+### Import some libraries ###########
+#####################################
  
 import os, sys, warnings
 import numpy as np
@@ -26,17 +35,45 @@ from matplotlib.ticker import MultipleLocator
   # Main function, for later. For now, just define some raw variables that
   #   would be loaded in the main function
   
-  SNamePET = 'pevpr'
-  SNameLE  = 'lhtfl'
+SNamePET = 'pevpr'
+SNameLE  = 'lhtfl'
   
-  Year = '2019'
-  Month = '09'
-  Day = '01'
+Year = '2019'
+Month = '09'
+Day = '01'
   
 #%%
-  # Load nc function
+##############################
+ ### load_nc function ########
+##############################
+ 
 def load_nc(VarSName, Year, Month, Day):
     '''
+    This function loads a netcdf file given the main variable's short name.
+      Note this function is created for the datasets created earlier in the 
+      create_synthetic_dataset.sh program, as seen in filename structure, the
+      variable names, and the date structure for the valid dates.
+      
+    Inputs:
+        VarSName - The short name of the variable for the netcdf
+        Year  - The ending year of variable dataset
+        Month - The ending month of the variable dataset
+        Day   - The ending day of the variable dataset
+        
+    Outputs:
+        X - Dictonary containing information from the netcdf file.
+            This information includes:
+                VarSname - Variable data (lat x lon x time)
+                lat and lon - latitude and longitude (both gridded)
+                FH    - The forecast hour each variable was extracted at
+                mask  - The land-sea mask of the variable
+                units - The units of the variable
+                date  - The full date at each time step
+                ymd   - The date (just year, month, and day) for each time step
+                year  - The year for each time step
+                month - The month for each time step
+                day   - The day for each time step
+                hour  - The hour/model run for each time step
     '''
     
     # Define the path and filename
@@ -81,6 +118,10 @@ def load_nc(VarSName, Year, Month, Day):
         # Collect the mask data
         X['mask'] = nc.variables['mask'][:,:]
         
+        ###################
+        # End of Function #
+        ###################
+        
     return X
         
         
@@ -100,7 +141,8 @@ J, I, T = LE['lhtfl'].shape
 T_days = len(np.unique(LE['ymd'])) # Count the total number of days
 LE['sum'] = np.ones((J, I, T_days)) * np.nan
 LE['avg'] = np.ones((J, I, T_days)) * np.nan
-  
+
+# Calculate the daily averages and daily sums
 for n, date in enumerate(np.unique(LE['ymd'])):
     ind = np.where(LE['ymd'] == date)[0]
     LE['sum'][:,:,n] = np.nansum(LE['lhtfl'][:,:,ind], axis = -1)
@@ -117,7 +159,8 @@ J, I, T = PET['pevpr'].shape
 T_days = len(np.unique(PET['ymd'])) # Count the total number of days
 PET['sum'] = np.ones((J, I, T_days)) * np.nan
 PET['avg'] = np.ones((J, I, T_days)) * np.nan
-  
+
+# Calculate the daily averages and daily sums
 for n, date in enumerate(np.unique(PET['ymd'])):
     ind = np.where(PET['ymd'] == date)[0]
     PET['sum'][:,:,n] = np.nansum(PET['pevpr'][:,:,ind], axis = -1)
@@ -136,7 +179,7 @@ ESR_sum = LE['sum']/PET['sum']
 ESR_avg = LE['avg']/PET['avg']
 
 #%%
-  # Plot ESR
+  # Plot ESR/make and example plot
 
 cmin = 0.0; cmax = 1.0; cint = 0.1
 clevs = np.arange(cmin, cmax+cint, cint)
@@ -151,7 +194,7 @@ ax = fig.add_subplot(1, 1, 1, projection = fig_proj)
 
 ax.coastlines()
 
-cs = ax.contourf(LE['lon'], LE['lat'], ESR_sum[:,:,-1], levels = clevs, cmap = cmap, 
+cs = ax.contourf(LE['lon'], LE['lat'], ESR_avg[:,:,-1], levels = clevs, cmap = cmap, 
                   transform = data_proj, extend = 'both', zorder = 1)
 
 cbax = fig.add_axes([0.92, 0.325, 0.02, 0.35])
