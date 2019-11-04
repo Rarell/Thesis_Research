@@ -4,6 +4,20 @@
 Created on Mon Oct 28 14:57:15 2019
 
 @author: Rarrell
+
+This script is designed as part of the create_synthetic_dataset.sh program.
+This scripts takes all temporary .nc files for a specific variable (created
+  in the extract_grb_variable script), loads the files and merges them into a
+  single set of variables. This single set is then dumped one .nc file for
+  later calculations. The dataset is also placed into the the Synthetic_Data
+  file for the user's reference.
+  
+Arguements:
+    VarName      - The long variable name of the .nc files being merged
+    VarSName     - The short variable name of the .nc files being merged
+    TypeOfHeight - The type of height the variable is located at
+    Parameters - A .txt files containing a range of dates and model runs of
+                 all the temporary .nc files
 """
 
 #%%
@@ -18,19 +32,29 @@ from glob import glob
 
 #%% Main function
 def main():
+    '''
+    This is the main function of the script. Arguements are loaded in here, 
+      and functions are called to load the .nc files and dump the merged data
+      into a single .nc file.
+    '''
+    
+    # Load the arguements
     script = sys.argv[0]
     VarName      = sys.argv[1]
     VarSName     = sys.argv[2]
     TypeOfHeight = sys.argv[3]
     Parameters = sys.argv[4]
     
+    # Upack the parameters
     Years, Months, Days, ModelRuns, Source = np.loadtxt(Parameters, dtype = str,
                                      delimiter = ' ', unpack = True)
     
+    # Load all the temporary .nc files and merge all their datasets
     Var, VarFH, lat, lon, VarVD, mask, units = load_multiple_nc(VarSName, Years,
                                                                 Months, Days,
                                                                 ModelRuns)
     
+    # Place the merged data into a single .nc file for later use
     write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
              Years, Months, Days, TypeOfHeight)
 
@@ -41,14 +65,12 @@ def main():
     
 def load_nc_full(VarSName, file):
     '''
-    This function loads one of the temporary .nc files created in the grb_to_nc
-      script. Some information is only loaded once as it is only needed once
-      for the complete dataset.
+    This function loads all of the data from one of the temporary .nc files 
+      created in the extract_grb_variable script. 
     
     Inputs:
         VarSName - Variable short name
         file - The name of the .nc file
-        VarFH - The forecast hour for the data
     '''
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
 #    filename = 'GFS_' + str(VarSName) + '_' +\
@@ -88,14 +110,13 @@ def load_nc_full(VarSName, file):
     
 def load_nc_partial(VarSName, file):
     '''
-    This function loads one of the temporary .nc files created in the grb_to_nc
-      script. Some information is only loaded once as it is only needed once
-      for the complete dataset.
+    This function some of the data loads from one of the temporary .nc files 
+      created in the extract_grb_variable script. This script only loads the
+      variable data, and valid date of the data.
     
     Inputs:
         VarSName - Variable short name
         file - The name of the .nc file
-        VarFH - The forecast hour for the data
     '''
 #    path = '/Users/Rarrell/Desktop/Thesis_Research/tmp/'
 #    filename = 'GFS_' + str(VarSName) + '_' +\
@@ -122,19 +143,23 @@ def load_nc_partial(VarSName, file):
 
 def load_multiple_nc(VarSName, Years, Months, Days, ModelRuns):
     '''
-    This function loads all the temporary .nc files created in the grb_to_nc
-      script and places the information in a single set of variables.
+    This function loads all the temporary .nc files created in the 
+      extract_grb_variable script and places the information in a 
+      single set of variables.
       
     Inputs:
         VarSName - Variable short name
-        FH - Vector of all forecast hours in the model run
+        Years     - Range of years all the variable files are valid for
+        Months    - Range of months all the variable files are valid for
+        Days      - Range of days all the variable files are valid for
+        ModelRuns - Range of model runs all the variable files are valid for
     
     Outputs:
         Var - Variable data in a lat x lon x forecast hour/time format.
-        VarFH - Vector of all forecast hours in the model run
+        VarFH - Forecast hour each valid date is located at
         lat - Vector of all latitudes
         lon - Vector of all longitudes
-        VarVD - Valid date for the model run
+        VarVD - Vector fo all the valid dates
         mask - Gridded land-sea mask (lat x lon format)
         units - Variable units
     '''
@@ -161,6 +186,9 @@ def load_multiple_nc(VarSName, Years, Months, Days, ModelRuns):
     mask = np.ones((J, I)) * np.nan
     
     # Load all temporary .nc files
+    #   Some variables are only needed once for complete dataset (e.g.,
+    #   latitude and longitude will not change). Load those variables only
+    #   only once in the first iteration.
     for n, file in enumerate(glob(path + 'GFS_' + str(VarSName) + '_*.nc')):
         if n == 0:
             Var[:,:,n], VarFH, lat[:], lon[:], VarVD[n], mask, units =\
@@ -196,10 +224,9 @@ def write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
         VarVD - Variable valid date
         mask  - Gridded land-sea mask (lat x lon format)
         units - Units of the variable
-        year  - Year the model run is valid for
-        month - Month the model is valid for
-        day   - Day the model is valid for
-        ModelRun - The model run the model is valid for
+        Years  - Range of years the data is valid for
+        Months - Month the months the data is valid for
+        Days   - Day the days the data is valid for
         TypeOfHeight - The type of height the variable is located at
     '''
     

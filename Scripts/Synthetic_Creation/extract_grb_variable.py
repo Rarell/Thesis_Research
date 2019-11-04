@@ -4,19 +4,52 @@
 Created on Mon Oct 28 13:07:36 2019
 
 @author: Rarrell
+
+This script is designed as part of the create_synthetic_dataset.sh program.
+This script takes in date and variable information for a GFS grib file
+  downloaded in the GFS_Download script, and opens that GFS file and extracts
+  the sepcified variable and some associated information. That variable data
+  and information is then dumped into a temporary netcdf file for later use in
+  the create_sythetic_dataset.sh program.
+  
+Arguments:
+    VarName      - The name of the variable to be extracted
+    TypeOfHeight - The type of height the variable is located in
+    Height       - The height level (unit determined by TypeOfHeight) the
+                   variable is located at
+    FH       - The forecast hour of the grib file
+    Year     - The year the GFS run was made
+    Month    - The month the GFS run was made
+    Day      - The day the GFS run was made
+    ModelRun - The model run of the GFS run
+    Source   - The location of grib file came from (this effects the location
+               and nomenclature of the grib file)
 """
 
-#%% Import libraries
+#%% 
+#####################################
+### Import some libraries ###########
+#####################################
+
 import sys, os, warnings
 import numpy as np
 import pygrib
 from netCDF4 import Dataset
 from glob import glob
 
-#%% Main function
+#%% 
+############################
+### Main Function ##########
+############################
+
 def main():
     '''
+    This is the main function of the script. It collects the arguements and
+      uses them in functions to collect the variable data and information and
+      dumps them in a netcdf file.
     '''
+    
+    # Collect the arguments
     script = sys.argv[0]
     VarName      = sys.argv[1]
     TypeOfHeight = sys.argv[2]
@@ -28,24 +61,58 @@ def main():
     ModelRun = sys.argv[8]
     Source   = sys.argv[9]
     
+    # Extract the specified data from the grib file
     VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask =\
         grbExtractData(VarName, TypeOfHeight, Height, FH, Year, Month, Day,
                        ModelRun, Source)
-        
+    
+    # Dump the data into a netcdf file
     create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName,
                   Mask, Year, Month, Day, ModelRun, TypeOfHeight)
     
     
         
     
+#%%  
+######################################
+### grbExtractData Function ##########
+######################################
     
-#%% grbExtractData function
 def grbExtractData(VarName, TypeOfHeight, Height, FH, Year, Month, Day, 
                    ModelRun, Source):
     '''
+    This function constructs a GFS filename given serveral parameters and
+      collects a specified variable and associated information.
+      
+    Inputs:
+        VarName      - String. The name of the variable to be extracted from 
+                       the GFS file.
+        TypeOfHeight - String. The type of height VarName is located with.
+        Height       - String. The height VarName is located at.
+        FH    - String. The forecast hour of the GFS file being examined.
+        Year  - String. The year of the GFS file being examined.
+        Month - String. The month of the GFS file being examined.
+        Day    - String. The day of the GFS file being examined.
+        ModelRun - String. The model run of the GFS file being examined.
+        Source   - String. Where the GFS file came from. Defines how the filename
+                   is constructed.
+                   
+    Outputs:
+        VarData - Float array. The gridded data of VarName.
+        lat - Float array. The gridded latitude associated with VarData.
+        lon - Float array. The gridded longitude associated with VarData.
+        VarUnits - String. The units of the VarData.
+        VarFH - Int. The valid forecast hour of VarData.
+        VarVD - String. The date for which VarData is valid.
+        VarName  - String. The long name of VarData.
+        VarSName - String. The short name of VarData.
+        Mask - Float array. Land-sea mask of VarData.
     '''
+    
+    # Define the path where the data is located
     path = './Data/tmp/'
     
+    # Construct the GFS file name based on where it was downloaded from
     if Source == 'Request':
         filename = 'gfs_3_' + str(Year) + str(Month) + str(Day) + '_' +\
                    str(ModelRun) +'00_0' + str(FH) + '.grb2'
@@ -65,9 +132,11 @@ def grbExtractData(VarName, TypeOfHeight, Height, FH, Year, Month, Day,
         filename = 'gfs.t' + str(ModelRun) + 'z.pgrb2.1p00.f' + str(FH)
         
         grb_file = path + filename
-        
+    
+    # Open the grib file    
     gfs = pygrib.open(grb_file)
     
+    # Collect the message of the specified variable
     VarMSG = gfs.select(name = VarName, typeOfLevel = TypeOfHeight, 
                         level = int(Height))
     
@@ -92,8 +161,12 @@ def grbExtractData(VarName, TypeOfHeight, Height, FH, Year, Month, Day,
     JMask, IMask = np.where(Mask == 0)
     VarData[JMask, IMask] = 0
     
-    # Close the .grb2 file
+    # Close the grib file
     gfs.close()
+    
+    ###################
+    # End of Function #
+    ###################
     
     return VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask
 
@@ -106,7 +179,7 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
                   VarSName, Mask, Year, Month, Day, ModelRun, TypeOfHeight):
     '''
     This function takes the variable data and information extracted from the
-      GFS grib files (in grb_extract_data function) and puts it in a temporary
+      GFS grib files (in grbExtractData function) and puts it in a temporary
       netcdf file to hold that data.
       
     Inputs:
@@ -116,7 +189,7 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
         VarUnits - The variable units
         VarFH - The forecast hour for the variable
         VarVD - The valid date for the variable
-        VarName - The variable long name
+        VarName  - The variable long name
         VarSName - The variable short name
         Mask - The gridded land-sea mask
         TypeOfHeight - The type of height the variable is located at
@@ -134,7 +207,7 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
     # Open the netcdf file and begin writing.
     with Dataset(path + filename, 'w', format = 'NETCDF4') as nc:
         # Write a short description. (This is more for completeness. Temporary
-        #   files are deleted at the end of the extract_GFS_variable.sh program.
+        #   files are deleted at the end of the create_synthetic_dataset.sh program.
         #   So this will most likely not be seen.)
         nc.description = "This is a temporary file will hold GFS data " +\
                          "for " + VarName + ". This will be for the " +\
@@ -184,6 +257,14 @@ def create_tmp_nc(VarData, lat, lon, VarUnits, VarFH, VarVD, VarName,
         ### End of Function ###
         #######################
 
-#%% Call the main function
+#%%
+#########################################
+### Call and Run the Main Function ######
+#########################################
+   
 if __name__ == '__main__':
     main()
+    
+#####################
+### End of Script ###
+#####################

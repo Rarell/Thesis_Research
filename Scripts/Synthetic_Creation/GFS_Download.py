@@ -4,17 +4,45 @@
 Created on Mon Oct 28 12:15:01 2019
 
 @author: Rarrell
+
+This script is designed as part of the create_synthetic_dataset.sh program.
+This script uses the given arguements to construct the url in which the GFS
+  data is located. It then downloads data for use later in program.
+  
+Arguements:
+    script - The name of the python script
+    FH - String. The forecast hour (in a 00X or 0XX, etc. form) of the GFS data.
+    Year     - String. The year for which the GFS run was made.
+    Month    - String. The month for which the GFS run was made.
+    Day      - String. The day for which the GFS run was made.
+    ModelRun - String. The model run of the GFS (00, 06, 12, or 18).
+    Source   - The source of the GFS data (whether it is from the NCEI, or NCEP
+               url or if a data request is needed).
 """
 
-#%% Import libraries
+#%% 
+#####################################
+### Import some libraries ###########
+#####################################
+
 import sys, os, warnings
 import wget
 import numpy as np
 import pygrib
 
 
-#%% Main function
+#%% 
+############################
+### Main Function ##########
+############################
+
 def main():
+    '''
+    This is the main function of the script. This is where the arguements are
+      collected and the other function is called.
+    '''
+    
+    # Collect the arguements
     script = sys.argv[0]
     FH     = sys.argv[1]
     Year   = sys.argv[2]
@@ -23,14 +51,35 @@ def main():
     ModelRun = sys.argv[5]
     Source   = sys.argv[6]
     
+    # Construct the url and download the data.
     DownloadData(Year, Month, Day, ModelRun, FH, Source)
 
-#%% Download data function
+#%%
+####################################
+### DownloadData Function ##########
+####################################
+
 def DownloadData(Year, Month, Day, ModelRun, FH, Source):
     '''
+    This function constructs the url for a GFS data file given the date, model
+      run, forecast hour, and location of the data, and downloads the data to
+      a temporary file.
+      
+    Inputs:
+        Year - String. The year in which the GFS model was made.
+        Month - String. The year in which the GFS model was made.
+        Day - String. The year in which the GFS model was made.
+        ModelRun - String. The model run of the GFS model (00, 06, 12, or 18)
+        FH - String. The forecast hour of the GFS data being collected.
+        Source - String. The location of the GFS data (either NCEI, NCEP, or
+                 a data request).
     '''
+    
+    # Define the path to which the data will be downloaded
     path = './Data/tmp/'
     
+    # Construct the url based on where the data will come from. If a data
+    #   request is needed, check that the file exists.
     if Source == 'Request':
         # Check that the .g2 folder exists in the Data folder.
         try:
@@ -51,6 +100,7 @@ def DownloadData(Year, Month, Day, ModelRun, FH, Source):
                           'Data folder.')
                               
     elif Source == 'NCEI':
+        # Construct the NCEI url
         filename = 'gfs_3_' + str(Year) + str(Month) + str(Day) + '_' +\
                    str(ModelRun) + '00' + '_' + str(FH) + '.grb2'
         url_start = 'https://nomads.ncdc.noaa.gov/data/gfs-avn-hi/'
@@ -58,9 +108,11 @@ def DownloadData(Year, Month, Day, ModelRun, FH, Source):
                     str(Day) +'/' + filename
         url = url_start + url_end
         
+        # Download the data
         wget.download(url, path + filename)
         
     else:
+        # Construct the NCEP url
         filename  = 'gfs.t' + str(ModelRun) + 'z.pgrb2.1p00.f' +\
                         str(FH)
         url_start = 'https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod/'
@@ -68,9 +120,21 @@ def DownloadData(Year, Month, Day, ModelRun, FH, Source):
                     str(ModelRun) + '/' + filename
         url = url_start + url_end
         
+        # Download the data
         wget.download(url, path + filename)
-        
+    
+    ###################
+    # End of Function #
+    ###################
 
-#%% Call main function
+#%%
+#########################################
+### Call and Run the Main Function ######
+#########################################
+        
 if __name__ == '__main__':
     main()
+    
+#####################
+### End of Script ###
+#####################
