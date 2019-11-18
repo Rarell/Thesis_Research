@@ -1,1 +1,0 @@
-0,2019,06,10,NCEI,Potential evaporation rate,surface,0,00,pevpr
