@@ -178,13 +178,26 @@ ESR = LE['lhtfl']/PET['pevpr']
 ESR_sum = LE['sum']/PET['sum']
 ESR_avg = LE['avg']/PET['avg']
 
+ESRsum = np.ones((J, I, T_days)) * np.nan
+ESRavg = np.ones((J, I, T_days)) * np.nan
+
+# Calculate the daily averages and daily sums
+for n, date in enumerate(np.unique(PET['ymd'])):
+    ind = np.where(PET['ymd'] == date)[0]
+    ESRsum[:,:,n] = np.nansum(ESR[:,:,ind], axis = -1)
+    ESRavg[:,:,n] = np.nanmean(ESR[:,:,ind], axis = -1)
+    
+print(ESRsum == ESR_sum)
+print(ESRavg == ESR_avg)
+
 #%%
   # Plot ESR/make and example plot
 
-cmin = 0.0; cmax = 1.0; cint = 0.1
+cmin = 0.0; cmax = 1.0; cint = 0.10
 clevs = np.arange(cmin, cmax+cint, cint)
 nlevs = len(clevs) - 1
-cmap  = plt.get_cmap(name = 'Reds', lut = nlevs)
+cmap = plt.get_cmap(name = 'Reds', lut = nlevs)
+#cmap  = plt.get_cmap(name = 'RdBu_r', lut = nlevs)
 
 data_proj = ccrs.PlateCarree()
 fig_proj  = ccrs.PlateCarree()
@@ -194,7 +207,7 @@ ax = fig.add_subplot(1, 1, 1, projection = fig_proj)
 
 ax.coastlines()
 
-cs = ax.contourf(LE['lon'], LE['lat'], ESR_avg[:,:,-1], levels = clevs, cmap = cmap, 
+cs = ax.contourf(LE['lon'], LE['lat'], ESRavg[:,:,-1], levels = clevs, cmap = cmap, 
                   transform = data_proj, extend = 'both', zorder = 1)
 
 cbax = fig.add_axes([0.92, 0.325, 0.02, 0.35])
@@ -202,4 +215,73 @@ cbar = fig.colorbar(cs, cax = cbax)
 
 plt.show(block = False)
 
+#%%
+  # Plot some histograms
+
+ESR_avec = ESR_avg.reshape(I*J*T_days, order = 'F')
+ESR_svec = ESR_sum.reshape(I*J*T_days, order = 'F')
+
+ind = np.where( ((ESR_avec[:] > 10) | (ESR_avec[:] < -10)) )[0]
+ESR_avec[ind] = np.nan
+
+ind = np.where( ((ESR_svec[:] > 10) | (ESR_svec[:] < -10)) )[0]
+ESR_svec[ind] = np.nan
   
+fig, axes = plt.subplots(figsize = [12, 14], ncols = 1, nrows = 2, sharex = True)
+ax1 = axes[0]; ax2 = axes[1]
+
+plt.subplots_adjust(left = 0.1, right = 0.9, bottom = 0.1, top = 0.9,
+                    wspace = 0.10, hspace = 0.10)
+
+
+ax1.set_title('Daily average ESR histogram')
+navg = ax1.hist(ESR_avec[:], bins = 100, density = False, color = 'r', alpha = 0.7)
+
+
+ax2.set_title('Daily sum ESR histogram')
+nsum = ax2.hist(ESR_svec[:], bins = 100, density = False, color = 'b', alpha = 0.7)
+
+
+
+plt.show(block = False)
+
+
+
+#%%
+neg_avg = np.where( navg[1] < 0 )[0]
+neg_sum = np.where( nsum[1] < 0 )[0]
+
+
+print(sum(navg[0][neg_avg]/sum(navg[0])))
+print(sum(nsum[0][neg_sum]/sum(nsum[0])))
+
+#%%
+  # Try some fresh plotting
+  
+ESR_avg = ESR_avec.reshape(J, I, T_days, order = 'F')
+ESR_sum = ESR_svec.reshape(J, I, T_days, order = 'F')
+
+cmin = 0.0; cmax = 1.0; cint = 0.10
+clevs = np.arange(cmin, cmax+cint, cint)
+nlevs = len(clevs) - 1
+cmap = plt.get_cmap(name = 'Reds', lut = nlevs)
+#cmap  = plt.get_cmap(name = 'RdBu_r', lut = nlevs)
+
+data_proj = ccrs.PlateCarree()
+fig_proj  = ccrs.PlateCarree()
+
+fig = plt.figure(figsize = [12, 16])
+ax = fig.add_subplot(1, 1, 1, projection = fig_proj)
+
+ax.set_title('One day sum of ESR calculated from GFS data.\n Valid for ' +\
+             str(LE['date'][-1]), size = 18)
+
+ax.coastlines()
+
+cs = ax.contourf(LE['lon'], LE['lat'], ESR_sum[:,:,-1], levels = clevs, cmap = cmap, 
+                  transform = data_proj, extend = 'both', zorder = 1)
+
+cbax = fig.add_axes([0.92, 0.355, 0.02, 0.29])
+cbar = fig.colorbar(cs, cax = cbax)
+
+plt.show(block = False)
