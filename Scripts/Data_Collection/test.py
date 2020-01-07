@@ -18,7 +18,7 @@ import numpy as np
 import pygrib
 from netCDF4 import Dataset
 from glob import glob
-from datetime import datetime
+from datetime import datetime, timedelta
 
 #%%
 # Create some example input
@@ -197,3 +197,69 @@ print(read_VD == var_valDate)
 print(read_FH[0] == var_forecastHour)
 print(read_var[:,:,0] == var_data)
 print(read_mask == mask_data)
+
+#%%
+  # Test for the SESR calculations script
+
+path = './Data/'
+filename = 'GFS_lhtfl_20190901_00.nc'
+
+print(Dataset(path + filename, 'r'))
+
+X = {}
+
+with Dataset(path + filename, 'r') as nc:
+    lat = nc.variables['lat'][:]
+    lon = nc.variables['lon'][:]
+    
+    FH = nc.variables['FH'][:]
+    VD = nc.variables['VD'][:]
+    
+    LE = nc.variables['lhtfl'][:,:,:]
+    
+    
+print(VD)
+print(FH)
+
+#%%
+  # More SESR calculations testing
+
+DateFormat = '%Y-%m-%d %H:%M:%S'
+
+VD = datetime.strptime(VD, DateFormat)
+
+initChange = timedelta(hours = 3)
+
+trueVD = VD - initChange
+
+print(trueVD)
+
+#%%
+  # Testing trying to turn FH into timedeltas
+dFH = np.ones((len(FH))) * np.nan
+dFH[0] = 0
+for i in range(1, len(dFH)):
+    dFH[i] = FH[i] - FH[0]
+#dFH[1:] = FH2[1:] - FH2[:-1]
+
+
+print(dFH)
+
+time = VD
+
+for dt in dFH:
+    time = VD + timedelta(hours = dt)
+    print(time)
+
+time = VD
+date = np.asarray([time + timedelta(hours = dt) for dt in dFH])
+print(date)
+
+
+
+
+
+
+
+
+

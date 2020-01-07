@@ -23,6 +23,8 @@ This script then concludes by appending this information to a temporary .txt
 import sys, os, warnings
 import numpy as np
 import pygrib
+import wget
+import tarfile
 from datetime import datetime, timedelta
 
 #%% 
@@ -36,6 +38,9 @@ def main():
       information write to a temporary .txt file.
     '''
     
+    script = sys.argv[0]
+    parameter = sys.argv[1]
+    
     # Collect the date and model run of the GFS data being examined.
     year, month, day, ModelRun = collect_date()
     
@@ -43,12 +48,15 @@ def main():
     #   is needed, determine if the .g2 folder exists in the Data folder.
     source, request = determine_source(year, month, day, ModelRun)
     
-    # Collect variable information of the variable to be extracted.
-    Var, TypeOfHeight, height = input_model_variables()
+    if parameter == '-v':
+        # Collect variable information of the variable to be extracted.
+        Var, TypeOfHeight, height = input_model_variables()
     
-    # Write the information into the temporary .txt file
-    write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
-              ModelRun)
+        # Write the information into the temporary .txt file
+        write_tmp(year, month, day, source, request, ModelRun,
+                  Var, TypeOfHeight, height)
+    else:
+        write_tmp(year, month, day, source, request,  ModelRun)
 
 
 #%% 
@@ -272,30 +280,47 @@ def determine_source(year, month, day, ModelRun):
         print('The requested date is over 1 year old. A data request is ' +\
               'required for this. This can be made at: \n' +\
               Request_page + '\n' +\
-              'Please ensure the request is made, the ' +\
-              '.g2 file is downloaded and unzipped in the Data ' +\
-              'directory.')
+              'Please ensure the request is made, then input the request ID.' +\
+              'here.\n')
         
+        RequestID = input( )
         request = 1
         source = None
         
+        # Collect the requested datafile.
+        print('Collecting the requested data.')
+        
+        path = './Data/tmp/'
+        filename  = 'gfs_3_' + str(year) + str(month) + str(day) + str(ModelRun) +\
+            '.g2.tar'
+        url_start = 'https://www1.ncdc.noaa.gov/pub/has/model/'
+        url = url_start + str(RequestID) + '/' + filename
+        wget.download(url, path + filename)
+        
+        print('\n Unpacking the .tar file.')
+        tf = tarfile.open(path + filename)
+        
+        directoryname = 'gfs_3_' + str(year) + str(month) + str(day) + str(ModelRun) +\
+            '.g2/'
+        tf.extractall(path = './Data/tmp/' + directoryname)
+        
         # Check that the .g2 folder exists in the Data folder.
-        try:
-            filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' +\
-                       '00' + str(ModelRun) + '_003.grb2'
-            path = './Data/gfs_3_' + str(year) + str(month) + str(day) +\
-                   str(ModelRun) + '.g2/'
-#           path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
-#                  str(day) + str(model_run) + '.g2/'
-            grb_file = path + filename
+#         try:
+#             filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' +\
+#                         '00' + str(ModelRun) + '_003.grb2'
+#             path = './Data/gfs_3_' + str(year) + str(month) + str(day) +\
+#                     str(ModelRun) + '.g2/'
+# #           path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
+# #                  str(day) + str(model_run) + '.g2/'
+#             grb_file = path + filename
             
-            grb = pygrib.open(grb_file)
-            grb.close()
-        except OSError:
-            raise OSError('.grb2 folder not found in the Data folder.' +\
-                          'Please make to make the request at: \n' +\
-                          Request_page + '\n' +\
-                          'and download the data to the Data folder.')
+#             grb = pygrib.open(grb_file)
+#             grb.close()
+#         except OSError:
+#             raise OSError('.grb2 folder not found in the Data folder.' +\
+#                           'Please make to make the request at: \n' +\
+#                           Request_page + '\n' +\
+#                           'and download the data to the Data folder.')
     
     else:
         request = 0
@@ -434,8 +459,8 @@ def input_model_variables():
 ############################
 ### write_tmp Function #####
 ############################
-def write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
-              ModelRun):
+def write_tmp(year, month, day, source, request, ModelRun, 
+              Var = None, TypeOfHeight = None, height = None):
     '''
     This function takes all the GFS file and variable information obtained in
       collect_data, determine_source, and input_model_variable and writes it to
@@ -456,14 +481,22 @@ def write_tmp(year, month, day, source, request, Var, TypeOfHeight, height,
     f.write(year + ',')
     f.write(month + ',')
     f.write(day + ',')
+    f.write(ModelRun + ',')
     f.write(str(source) + ',')
-    f.write(Var + ',')
-    f.write(TypeOfHeight + ',')
-    f.write(height + ',')
-    f.write(ModelRun)
     
     # Close the .txt file
     f.close()
+    
+    # Append to the variable tmp file if they are entered.
+    if (Var is None) & (TypeOfHeight is None) & (height is None):
+        pass
+    else:
+        f = open(path + 'tmp_var.txt', 'a')
+        f.write(str(Var) + ',')
+        f.write(str(TypeOfHeight) + ',')
+        f.write(str(height))
+        
+        f.close()
     
     #######################
     ### End of Function ###

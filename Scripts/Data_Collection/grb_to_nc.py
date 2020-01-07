@@ -52,28 +52,31 @@ def main():
     
     # Load in the arguements
     script = sys.argv[0]
-    parameters = sys.argv[1]
-    ForecastHour = sys.argv[2]
+    ForecastHour = sys.argv[1]
+    VarParameters = sys.argv[2]
+    Parameters    = sys.argv[3]
+    
     
     # Unpack the .txt file to obtain the model information
-    request = np.loadtxt(parameters, usecols = 0, delimiter = ',')
-    year, month, day, source, var, TypeOfHeight =\
-        np.loadtxt(parameters, usecols = np.arange(1,6+1), 
-                   dtype = str, delimiter = ',')
-    height  = np.loadtxt(parameters, usecols = 7, delimiter = ',')
-    model_run = np.loadtxt(parameters, usecols = 8, dtype = str, delimiter = ',')
+    Var, TypeOfHeight = np.loadtxt(VarParameters, usecols = (0, 1), 
+                                       dtype = str, delimiter = ',', unpack = True)
+    Height = np.loadtxt(VarParameters, usecols = 2, delimiter = ',')
     
+    Request = np.loadtxt(Parameters, usecols = 0, delimiter = ',')
+    Year, Month, Day, ModelRun, Source = np.loadtxt(Parameters, usecols = (1,2,3,4,5), 
+                                                    dtype = str, delimiter = ',', unpack = True)
+
     # Download (if needed) the GFS .grb2 file, load it, and extract the
     #  the desired variable and associated information
     VarData, lat, lon, VarUnits, VarFH, VarVD, VarName, VarSName, Mask =\
-        grb_extract_data(var = var, TypeOfHeight = TypeOfHeight, 
-                         height = height, year = year, month = month, day = day,
-                         model_run = model_run, forecast_hour = ForecastHour,
-                         request = request, source = source)
+        grb_extract_data(var = Var, TypeOfHeight = TypeOfHeight, 
+                         height = Height, year = Year, month = Month, day = Day,
+                         model_run = ModelRun, forecast_hour = ForecastHour,
+                         request = Request, source = Source)
     
     # Write the variable and information to a temporary .nc file
     create_tmp_nc(VarData = VarData, lat = lat, lon = lon, VarUnits = VarUnits,
-                  VarFH = VarFH, VarVD = VarVD, VarName = VarName, 
+                  VarFH = ForecastHour, VarVD = VarVD, VarName = VarName, 
                   VarSName = VarSName, Mask = Mask, TypeOfHeight = TypeOfHeight)
     
     # Append the variable short name to the temporary .txt file. Do only for
@@ -131,10 +134,10 @@ def grb_extract_data(var, TypeOfHeight, height, year, month, day,
     ##############################
     
     # If a data request was needed, construct location of the .g2 folder
-    if request is True:
+    if int(request) == 1:
         filename = 'gfs_3_' + str(year) + str(month) + str(day) + '_' + '00' +\
         str(model_run) + '_' + str(forecast_hour) + '.grb2'
-        path = './Data/gfs_3_' + str(year) + str(month) + str(day) +\
+        path = './Data/tmp/gfs_3_' + str(year) + str(month) + str(day) +\
                str(model_run) + '.g2/'
 #        path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
 #               str(day) + str(model_run) + '.g2/'
@@ -203,9 +206,6 @@ def grb_extract_data(var, TypeOfHeight, height, year, month, day,
     
     # Close the .grb2 file
     gfs.close()
-    
-    # Remove the no longer needed (and memory expensive) .grb2 file.
-    os.remove(path + filename)
     
     #######################
     ### End of Function ###
@@ -319,7 +319,7 @@ def append_tmp(VSName):
     #path = '/Users/Rarrell/Desktop/Thesis_Research/'
     
     # Open the temporary file
-    f = open(path + 'tmp.txt', 'a')
+    f = open(path + 'tmp_var.txt', 'a')
     
     # Append the short name
     f.write(',' + VSName)

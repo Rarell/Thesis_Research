@@ -40,16 +40,20 @@ def main():
     
     # Load arguements
     script = sys.argv[0]
-    parameters = sys.argv[1]
-    ForecastHour = sys.argv[2]
+    VarParameters = sys.argv[1]
+    Parameters    = sys.argv[2]
+    ForecastHour  = sys.argv[3]
     
-    # Unpack the .txt file to obtain the model information 
-    year, month, day, source, VarName, TypeOfHeight =\
-        np.loadtxt(parameters, usecols = np.arange(1, 6+1), dtype = str, 
-                   delimiter = ',')
+    # Unpack the .txt file to obtain the model information
+    VarName, TypeOfHeight, Height, VarSName = np.loadtxt(VarParameters,
+                                                         usecols = (0,1,2,3),
+                                                         dtype = str, delimiter = ',',
+                                                         unpack = True)
     
-    ModelRun, VarSName = np.loadtxt(parameters, usecols = np.arange(8, 9+1), 
-                                    dtype = str, delimiter = ',')
+    Year, Month, Day, ModelRun, Source = np.loadtxt(Parameters, 
+                                                    usecols = (1,2,3,4,5), dtype = str, 
+                                                    delimiter = ',', unpack = True)
+    
     
     # Unpack the .txt file containing all the forecast hours
     FH = np.loadtxt(ForecastHour, dtype = str, delimiter = ',')
@@ -59,7 +63,7 @@ def main():
     
     # Write a single .nc file containing the data for all forecast hours
     write_nc(VarSName, VarName, Var, VarFH, lat, lon, VarVD, mask, units,
-             year, month, day, ModelRun, TypeOfHeight)
+             Year, Month, Day, ModelRun, TypeOfHeight)
     
 
 #%%
@@ -86,7 +90,7 @@ def load_nc(VarSName, file, VarFH):
     with Dataset(file, 'r') as nc:
         # For the complete dataset, only 1 lat/lon grid, mask, units, and
         #   valid date are needed. Load them only once.
-        if str(VarFH) == '003':
+        if file == './Data/tmp/GFS_' + str(VarSName) + '_003.nc':
             lat = nc.variables['lat'][:]
             lon = nc.variables['lon'][:]
             
@@ -109,7 +113,7 @@ def load_nc(VarSName, file, VarFH):
     ### End of Function ###
     #######################
     
-    if str(VarFH) == '003':
+    if file == './Data/tmp/GFS_' + str(VarSName) + '_003.nc':
         return Var, FH, lat, lon, VD, mask, units
     else:
         return Var, FH
@@ -145,7 +149,7 @@ def load_multiple_nc(VarSName, FH):
     path = './Data/tmp/'
     
     # Load a temporary file
-    with Dataset(path + 'GFS_' + str(VarSName) + '_6.nc', 'r') as nc:
+    with Dataset(path + 'GFS_' + str(VarSName) + '_006.nc', 'r') as nc:
         tmp = nc.variables[str(VarSName)][:,:]
     
     # Collect dimensions
@@ -161,17 +165,27 @@ def load_multiple_nc(VarSName, FH):
     
     # Load all temporary .nc files
     for n, file in enumerate(glob(path + 'GFS_' + str(VarSName) + '_*.nc')):
-        if FH[n] == '003':
+        if file == path + 'GFS_' + str(VarSName) + '_003.nc':
             Var[:,:,n], VarFH[n], lat[:], lon[:], VarVD, mask, units =\
             load_nc(VarSName, file, FH[n])
         else:
             Var[:,:,n], VarFH[n] = load_nc(VarSName, file, FH[n])
     
+    # Note because of a new nomeclature of the tmp files, glob loads things
+    # in a random order. Sort everything to be in chronological order.
+    VarFH2 = np.ones((T, )) * np.nan
+    Var2   = np.ones((J, I, T)) * np.nan
+    for n, i in enumerate(np.sort(VarFH)):
+        ind = np.where(VarFH == i)[0]
+        
+        VarFH2[n]   = VarFH[ind[0]]
+        Var2[:,:,n] = Var[:,:,ind[0]]
+    
     #######################
     ### End of Function ###
     #######################
     
-    return Var, VarFH, lat, lon, VarVD, mask, units
+    return Var2, VarFH2, lat, lon, VarVD, mask, units
 
 #%%
 #############################
