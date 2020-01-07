@@ -9,11 +9,12 @@
 
 # Create some initial, temporary files/folders.
 touch ./tmp.txt
+touch ./tmp_var.txt
 mkdir ./Data/tmp
 
 # Collect information for model date, and variable name and location
 echo 'Collecting date and variable information'
-python ./Scripts/Data_Collection/input_model_information.py
+python ./Scripts/Data_Collection/input_model_information.py "$1"
 
 # If an error occurred in the script, end the program. The tmp file will be empty if there
 #   was an error. Reference the python error message to determine the error.
@@ -25,24 +26,99 @@ else
     exit 1
 fi
 
+# Create the forecast hours that will be looped over depending on the date
+python ./Scripts/Data_Collection/write_FH.py tmp.txt
+
+# If the user did not ask for a specific variable, but an indice then inform the user what
+#   variable(s) will be extracted
+if [ "$1" = '-v' ]
+then
+	:
+elif [ "$@" = 'SESR' ]
+then
+	echo 'The following variables will be collected'
+	echo 'Latent heat surface flux'
+	echo 'Potential evapotranspiration'
+elif [ "$@" = 'HI' ]
+then
+	echo 'Working on it.'
+fi
+
 # Loop over all the forecast hours. For each hour, extract the variable and place in a
 #   temporary file.
 while read FH
     do
     echo " "
     echo "Extracting data from the $FH Forecast Hour."
-    python Scripts/Data_Collection/grb_to_nc.py tmp.txt $FH
+    
+    # If the user asked for a specific variable, then tmp_var is not empty, and collect that
+    #   variable. If an indice was asked for, tmp_var is empty, and collect those variables.
+    if [ -s ./tmp_var.txt ]
+    then
+    	python ./Scripts/Data_Collection/grb_to_nc.py $FH tmp_var.txt tmp.txt
+    elif [ "$@" = 'SESR' ]
+    then
+    	echo 'Latent heat net flux','surface','0' > tmp_var.txt
+    	python ./Scripts/Data_Collection/grb_to_nc.py $FH tmp_var.txt tmp.txt
+    	> tmp_var.txt
+    	
+    	echo 'Potential evaporation rate','surface','0' > tmp_var.txt
+    	python ./Scripts/Data_Collection/grb_to_nc.py $FH tmp_var.txt tmp.txt
+    	> tmp_var.txt
+    elif ["$@" = 'HI' ]
+    then
+    	echo 'Something happens'
+    fi
+    
+    if [ -d ./Data/tmp/*.g2 ]
+	then
+		:
+	else
+		rm ./Data/tmp/*.grb2
+	fi
+    		
+#    python Scripts/Data_Collection/grb_to_nc.py tmp.txt $FH
 done < ./Scripts/Data_Collection/GFS_Forecast_Times.txt
+
+echo " " # Start a new line
 
 # Merge the temporary .nc files
 echo 'Merging .nc files.'
-python Scripts/Data_Collection/merge_nc.py tmp.txt Scripts/Data_Collection/txt_files/GFS_FH.txt
+if [ -s ./tmp_var.txt ]
+then
+	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+
+elif [ "$@" = 'SESR' ]
+then
+	echo 'Latent heat net flux','surface','0','lhtfl' > tmp_var.txt
+	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+	> tmp_var.txt
+	
+	echo 'Potential evaporation rate','surface','0','pevpr' > tmp_var.txt
+	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+	
+	echo 'Calculating SESR'
+	python ./Scripts/Data_Collection/SESR_calculations.py 'lhtfl' 'pevpr' tmp.txt
+elif [ "$@" = 'HI' ]
+then
+	echo 'More stuff happens'
+fi
 
 # Remove temporary files/folders
 echo ' '
 echo 'Removing temporary files and folders.'
-rm tmp.txt
-rm -r Data/tmp/
+rm ./tmp.txt
+rm ./tmp_var.txt
+rm -r ./Data/tmp/
+
+# Check if a .g2 file exits (as it should for a data request) and remove at the end of the program
+if [ -d ./Data/tmp/*.g2 ]
+then
+    rm -r ./Data/tmp/*.g2/
+    rm -r ./Data/tmp/*.g2.tar
+else
+	:
+fi
 
 # End of program
 echo 'Done'
