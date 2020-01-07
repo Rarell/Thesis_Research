@@ -1,0 +1,11 @@
+Data/SESR_Climatology/delta_sesr_climatology_std_pentad.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/GFS_grid_delta_sesr.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/GFS_grid_delta_sesr_pentad.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/GFS_grid_sesr.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/delta_sesr_climatology_std.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/esr_climatology_mean.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/esr_climatology_std.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/GFS_grid_sesr_pentad.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/delta_sesr_climatology_mean.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/delta_sesr_climatology_mean_pentad.nc filter=lfs diff=lfs merge=lfs -text
+Data/SESR_Climatology/*.nc filter=lfs diff=lfs merge=lfs -text
