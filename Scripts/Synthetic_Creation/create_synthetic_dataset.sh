@@ -75,10 +75,15 @@ while read tmp
     
     # Since the required data is stored elsewhere, remove the grib files as they take a
     #   lot of memory.
-    # Add an if block here to check if the source is request, and if so, delete the grib
-    # file in the .g2/ folder if so. Use this rm otherwise. Check, but it is possible the
-    # whole .g2/ folder can be deleted here.
-    rm ./Data/tmp/*.grb2
+    # Check if a .g2 file exists (it should for a data request), then remove the whole,
+    #   unnecessary .g2 file. If not, there was no data request, and remove the .grb2 file.
+    if [ -d ./Data/tmp/*.g2 ]
+    then
+    	rm -r ./Data/tmp/*.g2/
+    	rm -r ./Data/tmp/*.g2.tar
+    else
+    	rm ./Data/tmp/*.grb2
+    fi
 done < ./tmp_list.txt
 
 # Add new line after the downloading data is done
@@ -93,7 +98,8 @@ then
 	python ./Scripts/Synthetic_Creation/merge_nc.py 'Potential evaporation rate' 'pevpr' 'surface' tmp_list.txt
 	
 	echo 'Calculating SESR'
-	# Calculate SESR and create figures
+	# Calculate SESR
+	python ./Scripts/Synthetic_Creation/SESR_calculations.py lhtfl pevpr tmp_list.txt
 fi
 
 # Remove tmp files/folders
