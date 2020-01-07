@@ -115,9 +115,9 @@ def grbExtractData(VarName, TypeOfHeight, Height, FH, Year, Month, Day,
     # Construct the GFS file name based on where it was downloaded from
     if Source == 'Request':
         filename = 'gfs_3_' + str(Year) + str(Month) + str(Day) + '_' +\
-                   str(ModelRun) +'00_0' + str(FH) + '.grb2'
+                   str(ModelRun) +'00_' + str(FH) + '.grb2'
         
-        path = './Data/gfs_3_' + str(Year) + str(Month) + str(Day) +\
+        path = './Data/tmp/gfs_3_' + str(Year) + str(Month) + str(Day) +\
                str(ModelRun) + '.g2/'
         
         grb_file = path + filename

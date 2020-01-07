@@ -46,8 +46,8 @@ def main():
     Parameters = sys.argv[4]
     
     # Upack the parameters
-    Years, Months, Days, ModelRuns, Source = np.loadtxt(Parameters, dtype = str,
-                                     delimiter = ' ', unpack = True)
+    Years, Months, Days, ModelRuns = np.loadtxt(Parameters, usecols = (0, 1, 2, 3), 
+                                                dtype = str, delimiter = ' ', unpack = True)
     
     # Load all the temporary .nc files and merge all their datasets
     Var, VarFH, lat, lon, VarVD, mask, units = load_multiple_nc(VarSName, Years,

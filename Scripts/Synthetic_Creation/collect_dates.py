@@ -39,10 +39,10 @@ def main():
     Years, Months, Days, ModelRuns = CollectDates()
     
     # Determine what source the data is coming from
-    Sources = DetermineSources(Years, Months, Days, ModelRuns)
+    Sources, RequestID = DetermineSources(Years, Months, Days, ModelRuns)
     
     # Append all the information into a temporary file.
-    AppendTMP(Years, Months, Days, ModelRuns, Sources)
+    AppendTMP(Years, Months, Days, ModelRuns, Sources, RequestID)
 
 
 #%% 
@@ -376,7 +376,8 @@ def DetermineSources(Years, Months, Days, ModelRuns):
     DeltaWeek = timedelta(days = 7)
     DeltaYear = timedelta(days = 365)
     
-    Sources = ['tmp'] * len(Years)
+    Sources   = ['tmp'] * len(Years)
+    RequestID = ['tmp'] * len(Years)
     
     # Inform the user where the data will be coming from
     print('If any dates are older than a year, then a data request is needed.' +\
@@ -400,41 +401,49 @@ def DetermineSources(Years, Months, Days, ModelRuns):
         
         if TimeDelta > DeltaYear:
             Sources[n] = 'Request'
+            if ((n != 0) | (RequestID[n-1] == 'None')):
+                RequestID[n] = RequestID[n-1]
+            else:
+                RequestID[n] = input('A data request is needed for dates older ' +\
+                                     'than a year. Please input the request ' +\
+                                     'here:\n')
             
             # Check that the .g2 folder exists in the Data folder.
-            try:
-                filename = 'gfs_3_' + str(Years[n]) + str(Months[n]) +\
-                           str(Days[n]) + '_' + '00' + str(ModelRuns[n]) + '_003.grb2'
-                path = './Data/gfs_3_' + str(Years[n]) + str(Months[n]) +\
-                       str(Days[n]) + str(ModelRuns[n]) + '.g2/'
-#               path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
-#                      str(day) + str(model_run) + '.g2/'
-                grb_file = path + filename
+#             try:
+#                 filename = 'gfs_3_' + str(Years[n]) + str(Months[n]) +\
+#                            str(Days[n]) + '_' + '00' + str(ModelRuns[n]) + '_003.grb2'
+#                 path = './Data/gfs_3_' + str(Years[n]) + str(Months[n]) +\
+#                        str(Days[n]) + str(ModelRuns[n]) + '.g2/'
+# #               path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
+# #                      str(day) + str(model_run) + '.g2/'
+#                 grb_file = path + filename
                 
-                grb = pygrib.open(grb_file)
-                grb.close()
-            except OSError:
-                raise OSError('.grb2 folder not found in the Data folder.' +\
-                              'Please make to make the request at: \n' +\
-                              Request_page + '\n' +\
-                              'and download the data to the Data folder.')
+#                 grb = pygrib.open(grb_file)
+#                 grb.close()
+#             except OSError:
+#                 raise OSError('.grb2 folder not found in the Data folder.' +\
+#                               'Please make to make the request at: \n' +\
+#                               Request_page + '\n' +\
+#                               'and download the data to the Data folder.')
             
         elif ((TimeDelta < DeltaYear) & (TimeDelta > DeltaWeek)):
-            Sources[n] = 'NCEI'
+            Sources[n]   = 'NCEI'
+            RequestID[n] = 'None'
         else:
-            Sources[n] = 'NCEP'
+            Sources[n]   = 'NCEP'
+            RequestID[n] = 'None'
     
     ###################
     # End of Function #
     ###################
-    return Sources
+    return Sources, RequestID
 
 #%%
 #############################
 ### AppendTMP Function ######
 #############################
     
-def AppendTMP(Years, Months, Days, ModelRuns, Sources):
+def AppendTMP(Years, Months, Days, ModelRuns, Sources, RequestID):
     '''
     This function appends the information from the previous two functions onto
       a temporary file.
@@ -456,7 +465,7 @@ def AppendTMP(Years, Months, Days, ModelRuns, Sources):
     # Write the information to it
     for n in range(len(Years)):
         f.write(Years[n] + ' ' + Months[n] + ' ' + Days[n] + ' ' +\
-                ModelRuns[n] + ' ' + Sources[n] + '\n')
+                ModelRuns[n] + ' ' + Sources[n] + ' ' + RequestID[n] + '\n')
     
     # Close the function
     f.close()

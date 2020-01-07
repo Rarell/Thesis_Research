@@ -29,6 +29,7 @@ import sys, os, warnings
 import wget
 import numpy as np
 import pygrib
+import tarfile
 
 
 #%% 
@@ -50,16 +51,17 @@ def main():
     Day    = sys.argv[4]
     ModelRun = sys.argv[5]
     Source   = sys.argv[6]
+    RequestID = sys.argv[7]
     
     # Construct the url and download the data.
-    DownloadData(Year, Month, Day, ModelRun, FH, Source)
+    DownloadData(Year, Month, Day, ModelRun, FH, Source, RequestID)
 
 #%%
 ####################################
 ### DownloadData Function ##########
 ####################################
 
-def DownloadData(Year, Month, Day, ModelRun, FH, Source):
+def DownloadData(Year, Month, Day, ModelRun, FH, Source, RequestID):
     '''
     This function constructs the url for a GFS data file given the date, model
       run, forecast hour, and location of the data, and downloads the data to
@@ -81,24 +83,34 @@ def DownloadData(Year, Month, Day, ModelRun, FH, Source):
     # Construct the url based on where the data will come from. If a data
     #   request is needed, check that the file exists.
     if Source == 'Request':
+        filename  = 'gfs_3_' + str(Year) + str(Month) + str(Day) + str(ModelRun) +\
+            '.g2.tar'
+        url_start = 'https://www1.ncdc.noaa.gov/pub/has/model/'
+        url = url_start + str(RequestID) + '/' + filename
+        wget.download(url, path + filename)
+        tf = tarfile.open(path + filename)
+        
+        directoryname = 'gfs_3_' + str(Year) + str(Month) + str(Day) + str(ModelRun) +\
+            '.g2/'
+        tf.extractall(path = './Data/tmp/' + directoryname)
         # Check that the .g2 folder exists in the Data folder.
-        try:
-            filename = 'gfs_3_' + str(Year) + str(Month) +\
-                       str(Day) + '_' + '00' + str(ModelRun) + '_003.grb2'
-            path = './Data/gfs_3_' + str(Year) + str(Month) +\
-                   str(Day) + str(ModelRun) + '.g2/'
-#           path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
-#                  str(day) + str(model_run) + '.g2/'
-            grb_file = path + filename
+#         try:
+#             filename = 'gfs_3_' + str(Year) + str(Month) +\
+#                        str(Day) + '_' + '00' + str(ModelRun) + '_003.grb2'
+#             path = './Data/gfs_3_' + str(Year) + str(Month) +\
+#                    str(Day) + str(ModelRun) + '.g2/'
+# #           path = '/Users/Rarrell/Downloads/gfs_3_' + str(year) + str(month) +\
+# #                  str(day) + str(model_run) + '.g2/'
+#             grb_file = path + filename
                 
-            grb = pygrib.open(grb_file)
-            grb.close()
-        except OSError:
-            raise OSError('.grb2 folder not found in the Data folder.' +\
-                          'Please make to make the request at (see above ' +\
-                          'instructions) and download the data to the ' +\
-                          'Data folder.')
-                              
+#             grb = pygrib.open(grb_file)
+#             grb.close()
+#         except OSError:
+#             raise OSError('.grb2 folder not found in the Data folder.' +\
+#                           'Please make to make the request at (see above ' +\
+#                           'instructions) and download the data to the ' +\
+#                           'Data folder.')
+
     elif Source == 'NCEI':
         # Construct the NCEI url
         filename = 'gfs_3_' + str(Year) + str(Month) + str(Day) + '_' +\
