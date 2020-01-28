@@ -355,6 +355,8 @@ lonmax = -91
 latmin = 41
 latmax = 43
 
+ForcHour0 = np.where(Forc['date'][0] == time)[0]
+
 dateFMT = DateFormatter('%m-%d')
 
 # Find the year corresponding to the GFS interval
@@ -382,6 +384,7 @@ ax.set_title('NARR and GFS SESR time series for Iowa in June and July, 2012', si
 ax.plot(time, gfssesr, 'b-', label = 'GFS')
 ax.plot(Climsesr['ymd'][narrdatesind], narrsesr[narrdatesind], 'r-.', label = 'NARR')
 ax.legend(fontsize = 22, shadow = True)
+ax.vlines(time[ForcHour0], -3.5, 1, linestyle = 'dashed')
 
 ax.set_ylim([-3.5, 1])
 ax.set_yticks(np.arange(-3, 1+1, 1))
