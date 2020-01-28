@@ -9,4 +9,6 @@
 *.out
 *.snm
 *.toc
-
+*.jpg
+*.jpeg
+*.gif
