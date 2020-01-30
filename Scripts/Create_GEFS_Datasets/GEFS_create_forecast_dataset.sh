@@ -119,16 +119,16 @@ echo " " # Start a new line
 echo 'Merging ensemble members.'
 if [ -s ./tmp_var.txt ]
 then
-	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+	python ./Scripts/Create__GEFS_Datasets/merge_ensembles.py ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt tmp_var.txt tmp.txt
 
 elif [ "$@" = 'SESR' ]
 then
 	echo 'Latent heat net flux','surface','0','lhtfl' > tmp_var.txt
-	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+	python ./Scripts/Create__GEFS_Datasets/merge_ensembles.py ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt tmp_var.txt tmp.txt
 	> tmp_var.txt
 	
 	echo 'Potential evaporation rate','surface','0','pevpr' > tmp_var.txt
-	python ./Scripts/Data_Collection/merge_nc.py tmp_var.txt tmp.txt ./Scripts/Data_Collection/txt_files/GFS_FH.txt
+	python ./Scripts/Create__GEFS_Datasets/merge_ensembles.py ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt tmp_var.txt tmp.txt
 	
 	echo 'Calculating SESR'
 	python ./Scripts/Data_Collection/SESR_calculations.py 'lhtfl' 'pevpr' tmp.txt
