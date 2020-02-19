@@ -51,7 +51,7 @@ def main():
     
     # Unpack the parameters
     Request, Year, Month, Day, ModelRun, Source, RequestID = np.loadtxt(Parameters,
-                                                                        dtype = str, delimieter = ',', unpack = True)
+                                                                        dtype = str, delimiter = ',', unpack = True)
     
     # Construct the url and download the data.
     DownloadData(Year, Month, Day, ModelRun, FH, Source, EM, Request, RequestID)

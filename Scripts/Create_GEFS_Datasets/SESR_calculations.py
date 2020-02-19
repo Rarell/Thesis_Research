@@ -108,8 +108,8 @@ def load_nc(VarSName, Year, Month, Day, ModelRun):
     
     # Define the path and filename
     path = './Data/'
-    filename = 'GFS_' + str(VarSName) + '_' + str(Year) + str(Month) +\
-               str(Day) + '_' + str(ModelRun) + '.nc'
+    filename = 'GEFS_' + str(VarSName) + '_' + str(Year) + str(Month) +\
+               str(Day) + '_' + str(ModelRun) + '_mean.nc'
     
     # Initialize the directory for the data
     X = {}
