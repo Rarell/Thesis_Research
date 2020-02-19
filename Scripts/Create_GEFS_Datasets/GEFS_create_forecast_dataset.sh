@@ -14,7 +14,7 @@ mkdir ./Data/tmp
 
 # Collect information for model date, and variable name and location
 echo 'Collecting date and variable information'
-python ./Scripts/Create_GEFS_Datasets/input_model_information.py "$1"
+python ./Scripts/Create_GEFS_Datasets/GEFS_input_model_information.py "$1"
 
 # If an error occurred in the script, end the program. The tmp file will be empty if there
 #   was an error. Reference the python error message to determine the error.
@@ -51,11 +51,11 @@ while read FH
     echo " "
     echo "Extracting data from the $FH Forecast Hour."
     
-    for EM in ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt # Loop through each ensemble member
+    while read EM 
     	do
     	
     	# Download the data
-    	python ./Scripts/Create_GEFS_Datasets/GFS_Download.py $FH $EM tmp.txt
+    	python ./Scripts/Create_GEFS_Datasets/GEFS_Download.py $FH $EM tmp.txt
     	
     	# If the user asked for a specific variable, then tmp_var is not empty, and collect that
     	#   variable. If an indice was asked for, tmp_var is empty, and collect those variables.
@@ -82,12 +82,12 @@ while read FH
 		else
 			rm ./Data/tmp/*.grb2
 		fi
-    done	
+    done < ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt # Loop through each ensemble member
 #    python Scripts/Data_Collection/grb_to_nc.py tmp.txt $FH
 done < ./Scripts/Create_GEFS_Datasets/GFS_Forecast_Times.txt
 
 # Merge the temporary .nc files into full forecast files for each ensemble member
-for EM in ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt
+while read EM 
 	do
 	echo " "
 	echo "Merging .nc files for ensemble member $EM."
@@ -111,7 +111,7 @@ for EM in ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt
     	echo 'Something happens'
     fi
 	
-done
+done < ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt
 	
 echo " " # Start a new line
 
@@ -131,7 +131,7 @@ then
 	python ./Scripts/Create_GEFS_Datasets/merge_ensembles.py ./Scripts/Create_GEFS_Datasets/Ensemble_Members.txt tmp_var.txt tmp.txt
 	
 	echo 'Calculating SESR'
-	python ./Scripts/Data_Collection/SESR_calculations.py 'lhtfl' 'pevpr' tmp.txt
+	python ./Scripts/Create_GEFS_Datasets/SESR_calculations.py 'lhtfl' 'pevpr' tmp.txt
 elif [ "$@" = 'HI' ]
 then
 	echo 'More stuff happens'
@@ -144,7 +144,7 @@ rm ./tmp.txt
 rm ./tmp_var.txt
 rm -r ./Data/tmp/
 
-# Check if a .g2 file exits (as it should for a data request) and remove at the end of the program
+# Check if a .g2 file exits (as it should for a data request) and remove it at the end of the program
 if [ -d ./Data/tmp/*.g2 ]
 then
     rm -r ./Data/tmp/*.g2/
